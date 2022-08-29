@@ -23,7 +23,7 @@ class Downloader():
             self.url = str(url)
         if 'playlist' in self.url:
             self.yt = Playlist(self.url)
-            self.total_videos = len(self.yt.videos)
+            self.total_videos = self.yt.length
         else:
             self.yt = YouTube(self.url)
             self.total_videos = 1
@@ -33,11 +33,11 @@ class Downloader():
         for index, stream in enumerate(video.streams):
             print(f'{index}. {stream.mime_type.split("/")[1]} {stream.resolution}')
         res = input("Choose the quality?")
-        print(f'Video {video.title} ({video.streams[res].mime_type.split("/")[1]} {video.streams[res].resolution}) is selected...')
+        print(f'Video {video.title} ({video.streams[res].file_extension } - {video.streams[res].type} {video.streams[res].resolution}) is selected...')
         return video.streams[res]
             
     def get_highest_resolution(self, video):
-        print(f'Highest Resolution: {video.streams.get_highest_resolution().resolution} ({video.streams.get_highest_resolution().mime_type.split("/")[1]}) for {video.title} is selected...')
+        print(f'Highest Resolution: {video.title} ({video.streams.get_highest_resolution().file_extension } - {video.streams.get_highest_resolution().type} {video.streams.get_highest_resolution().resolution}) is selected...')
         return video.streams.get_highest_resolution()
 
     def get_stream(self, video, resolution):
@@ -60,10 +60,13 @@ class Downloader():
             full_out_location += "Crime Patrol" + "/"
         else:
             full_out_location = self.output_folder + "/"
-        if self.multi_threading:
-            print('Multi Threading On...')
-        # for video in self.yt.videos:
-        #     self.save(video, full_out_location)
+        if self.total_videos > 1:
+            if self.multi_threading:
+                print('Multi Threading On...')
+            for video in self.yt.videos:
+                self.save(video, full_out_location)
+        else:
+            self.save(self.yt,full_out_location)
         print(f"All the downloads Completed Successfully and Saved to {full_out_location}")
     
     def save(self, video, path):
