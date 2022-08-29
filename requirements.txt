@@ -1,3 +1,4 @@
 engineering-notation==0.6.0
+python-dotenv==0.20.0
 pytube==12.1.0
 tk-tools==0.16.0

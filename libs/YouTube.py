@@ -22,8 +22,9 @@ class Downloader():
         if url is not None:
             self.url = str(url)
         self.yt = Playlist(self.url)
-        self.total_videos = len(self.yt.video_urls)
         self.title = self.yt.title
+        self.total_videos = len(self.yt.videos)
+        print(self.total_videos)
         
     def select_resolution(self, video):
         for index, stream in enumerate(video.streams):

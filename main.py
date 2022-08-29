@@ -38,7 +38,7 @@ class App():
     def download(self):
         url = "https://www.youtube.com/watch?v=I2PsRRgRKto"
         self.downloader.get()
-        self.downloader.download()
+        # self.downloader.download()
         
     
     def center(self):
