@@ -28,7 +28,6 @@ class Downloader():
             self.yt = YouTube(self.url)
             self.total_videos = 1
         self.title = self.yt.title
-        print(self.total_videos)
         
     def select_resolution(self, video):
         for index, stream in enumerate(video.streams):
@@ -52,8 +51,13 @@ class Downloader():
         if out_path is not None:
             self.output_folder = str(out_path)
         self.resolution = resolution
+        full_out_location = self.output_folder + "/"
         if self.total_videos > 1:
-            full_out_location = self.output_folder + "/" + self.title + "/"
+            full_out_location += self.title + "/"
+        elif 'CID' in self.title:
+            full_out_location += "CID" + "/"
+        elif 'Crime Patrol' in self.title:
+            full_out_location += "Crime Patrol" + "/"
         else:
             full_out_location = self.output_folder + "/"
         if self.multi_threading:
