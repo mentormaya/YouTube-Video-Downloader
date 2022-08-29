@@ -25,7 +25,8 @@ class App():
     
     def setupUI(self):
         self.main_window.geometry(self.config.APP_SIZE)
-        self.main_window.attributes('-alpha', self.config.ALPHA)
+        if self.config.ALPHA:
+            self.main_window.attributes('-alpha', self.config.ALPHA)
         self.main_window.title(self.config.APP_NAME + " " + self.config.APP_VERSION)
         main_frame = ttk.Frame()
         main_frame.pack()
