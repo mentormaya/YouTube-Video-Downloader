@@ -1,5 +1,5 @@
 import json
-import threading
+from threading import Thread
 from dotenv import dotenv_values
 from pytube import YouTube, Playlist
 
@@ -10,6 +10,26 @@ from libs.PythonJson import PythonJson as Pjson     #could be used from dotmap i
 
 config = Pjson(dotenv_values(".env"))
 
+class GetInfo(Thread):
+    def __init__(self, url = None):
+        super().__init__()
+        self.downloader = Downloader()
+        self.url = url
+    
+    def run(self):
+        self.info = self.downloader.get(self.url)
+        print(f'GotInfo: {self.downloader.title}')
+
+class Download(Thread):
+    def __init__(self, yt, out_path = None, resolution = 'highest'):
+        super().__init__()
+        self.downloader = yt
+        self.out_path = out_path
+        self.resolution = resolution
+    
+    def run(self):
+        print(f'Downloading: {self.downloader.title}')
+        self.downloader.download(self.out_path, self.resolution)
 class Downloader():
     def __init__(self):
         self.config = config
@@ -28,16 +48,17 @@ class Downloader():
             self.yt = YouTube(self.url)
             self.total_videos = 1
         self.title = self.yt.title
+        return self
         
     def select_resolution(self, video):
         for index, stream in enumerate(video.streams):
             print(f'{index}. {stream.mime_type.split("/")[1]} {stream.resolution}')
         res = input("Choose the quality?")
-        print(f'Video {video.title} ({video.streams[res].mime_type.split("/")[1]} {video.streams[res].resolution}) is selected...')
+        print(f'Resolution: {video.streams[res].resolution} ({video.streams.get_highest_resolution().subtype} - {video.streams.get_highest_resolution().type}) for {video.title} is selected...')
         return video.streams[res]
             
     def get_highest_resolution(self, video):
-        print(f'Highest Resolution: {video.streams.get_highest_resolution().resolution} ({video.streams.get_highest_resolution().mime_type.split("/")[1]}) for {video.title} is selected...')
+        print(f'Highest Resolution:  {video.streams.get_highest_resolution().resolution} ({video.streams.get_highest_resolution().subtype} - {video.streams.get_highest_resolution().type}) for {video.title} is selected...')
         return video.streams.get_highest_resolution()
 
     def get_stream(self, video, resolution):
@@ -60,11 +81,15 @@ class Downloader():
             full_out_location += "Crime Patrol" + "/"
         else:
             full_out_location = self.output_folder + "/"
-        if self.multi_threading:
-            print('Multi Threading On...')
-        # for video in self.yt.videos:
-        #     self.save(video, full_out_location)
+        if (self.total_videos > 1):
+            self.save_all(self.yt.videos, full_out_location)
+        else:
+            self.save(self.yt, full_out_location)
         print(f"All the downloads Completed Successfully and Saved to {full_out_location}")
     
     def save(self, video, path):
         self.get_stream(video, self.resolution).download(path)
+    
+    def save_all(self, videos, path):
+        for video in videos:
+            self.get_stream(video, self.resolution).download(path)
