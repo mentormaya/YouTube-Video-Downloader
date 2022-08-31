@@ -1,10 +1,10 @@
-from tkinter.ttk import Frame, Label, Separator
+from tkinter import *
+from tkinter.ttk import Separator
 
 
 class Header(Frame):
-    def __init__(self, master, text, config):
-        super().__init__()
-        self.master = master
+    def __init__(self, text, config, *args, **kwargs):
+        super(Header, self).__init__(*args, **kwargs)
         self.app_config = config
         self.text = text
         self.drawUI()
@@ -18,5 +18,5 @@ class Header(Frame):
         headerLabel.pack(padx=10, pady=10)
         
         seperator = Separator(self, orient='horizontal')
-        seperator.pack(fill='x')
+        seperator.pack(fill=X)
         

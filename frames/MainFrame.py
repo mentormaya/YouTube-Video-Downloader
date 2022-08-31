@@ -1,16 +1,20 @@
-from tkinter.ttk import Frame, Label
+from tkinter import *
 
 from frames.Header import Header
 
 
 class MainFrame(Frame):
-    def __init__(self, master, config):
-        super().__init__()
-        self.master = master
+    def __init__(self, config, *args, **kwargs):
+        super(MainFrame, self).__init__(*args, **kwargs)
         self.app_config = config
         self.title = f"Welcome to {self.app_config.APP_NAME}"
+        self.status = StringVar()
         self.drawUI()
     
     def drawUI(self):
-        headerLabel = Header(self, self.title, self.app_config)
-        headerLabel.pack(padx=10, pady=10)
+        mainContainer = Frame(self, bg=self.app_config.MAIN_BG_COLOR)
+        
+        self.header = Header(text=self.title, config=self.app_config, master=mainContainer)
+        self.header.pack()
+        
+        mainContainer.pack(expand=True, fill=BOTH)

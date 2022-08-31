@@ -1,11 +1,10 @@
-from tkinter.ttk import Frame, Label
+from tkinter import *
 
 from frames.Header import Header
 
 class AboutFrame(Frame):
-    def __init__(self, master, config):
-        super().__init__()
-        self.master = master
+    def __init__(self, config, *args, **kwargs):
+        super(AboutFrame, self).__init__(*args, **kwargs)
         self.app_config = config
         self.title = f"About App and Developer"
         self.drawUI()

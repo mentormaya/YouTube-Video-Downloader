@@ -1,9 +1,7 @@
+from textwrap import fill
 from tkinter import *
-from tkinter import ttk
 from tkinter import messagebox
-from turtle import down
 from dotenv import dotenv_values
-import threading
 
 #-----------------------------------------------
 # local Library
@@ -16,6 +14,7 @@ from libs.YouTube import GetInfo, Download
 #-----------------------------------------------
 from frames.MainFrame import MainFrame
 from frames.AboutFrame import AboutFrame
+from frames.StatusBar import StatusBar
 
 config = Pjson(dotenv_values(".env"))
 class App():
@@ -36,10 +35,19 @@ class App():
         self.main_window.geometry(self.config.APP_SIZE)
         self.main_window.attributes('-alpha', self.config.ALPHA)
         self.main_window.title(self.config.APP_NAME + " " + self.config.APP_VERSION)
-        main_frame = MainFrame(self.main_window, self.config)
-        main_frame.pack()
-        about_frame = AboutFrame(self.main_window, self.config)
+        self.main_window.config(bg=self.config.MAIN_BG_COLOR)
+        main_frame = MainFrame(config=self.config, master=self.main_window)
+        # main_frame.grid(row=0, column=0)
+        main_frame.pack(expand=True, fill=X)
+        # about_frame = AboutFrame(self.main_window, self.config)
         # about_frame.pack()
+        
+        self.statusBar = StatusBar(config=self.config, master=self.main_window, height=self.config.STATUS_BAR_HEIGHT)
+        self.statusBar.pack_propagate(False)
+        # self.statusBar.grid(row=1, column=0)
+        self.statusBar.pack(side=BOTTOM, expand=True, fill=X)
+        
+        self.statusBar.updateStatus("App initialized!")
     
     def get_info(self):
         url = "https://www.youtube.com/watch?v=I2PsRRgRKto"
