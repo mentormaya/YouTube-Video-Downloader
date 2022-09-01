@@ -11,32 +11,54 @@ from libs.PythonJson import PythonJson as Pjson     #could be used from dotmap i
 config = Pjson(dotenv_values(".env"))
 
 class GetInfo(Thread):
-    def __init__(self, url = None):
+    def __init__(self, url = None, status = None):
         super().__init__()
-        self.downloader = Downloader()
+        self.status = status
+        self.downloader = Downloader(self.status)
         self.url = url
     
     def run(self):
         self.info = self.downloader.get(self.url)
-        print(f'GotInfo: {self.downloader.title}')
+        self.info.status = self.status
+        self.update(f'GotInfo: {self.downloader.title}')
+    
+    def update(self, msg):
+        if self.status is not None:
+            self.status.updateStatus(msg)
+        else:
+            print(msg)
 
 class Download(Thread):
     def __init__(self, yt, out_path = None, resolution = 'highest'):
         super().__init__()
         self.downloader = yt
+        self.status = yt.status
         self.out_path = out_path
         self.resolution = resolution
     
     def run(self):
-        print(f'Downloading: {self.downloader.title}')
+        self.update(f'Downloading: {self.downloader.title}')
         self.downloader.download(self.out_path, self.resolution)
+    
+    def update(self, msg):
+        if self.status is not None:
+            self.status.updateStatus(msg)
+        else:
+            print(msg)
 class Downloader():
-    def __init__(self):
+    def __init__(self, status):
         self.config = config
+        self.status = status
         self.url = str(self.config.URL)
         self.output_folder = str(self.config.OUTPUT_FOLDER)
         self.resolution = 'highest'
         self.multi_threading = bool(self.config.MULTITHREADING) if self.config.MULTITHREADING else False
+    
+    def update(self, msg):
+        if self.status is not None:
+            self.status.updateStatus(msg)
+        else:
+            print(msg)
     
     def get(self, url = None):
         if url is not None:
@@ -52,13 +74,13 @@ class Downloader():
         
     def select_resolution(self, video):
         for index, stream in enumerate(video.streams):
-            print(f'{index}. {stream.mime_type.split("/")[1]} {stream.resolution}')
+            self.update(f'{index}. {stream.mime_type.split("/")[1]} {stream.resolution}')
         res = input("Choose the quality?")
-        print(f'Resolution: {video.streams[res].resolution} ({video.streams.get_highest_resolution().subtype} - {video.streams.get_highest_resolution().type}) for {video.title} is selected...')
+        self.update(f'Resolution: {video.streams[res].resolution} ({video.streams.get_highest_resolution().subtype} - {video.streams.get_highest_resolution().type}) for {video.title} is selected...')
         return video.streams[res]
             
     def get_highest_resolution(self, video):
-        print(f'Highest Resolution:  {video.streams.get_highest_resolution().resolution} ({video.streams.get_highest_resolution().subtype} - {video.streams.get_highest_resolution().type}) for {video.title} is selected...')
+        self.update(f'Highest Resolution:  {video.streams.get_highest_resolution().resolution} ({video.streams.get_highest_resolution().subtype} - {video.streams.get_highest_resolution().type}) for {video.title} is selected...')
         return video.streams.get_highest_resolution()
 
     def get_stream(self, video, resolution):

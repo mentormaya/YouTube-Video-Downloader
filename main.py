@@ -1,13 +1,13 @@
 from textwrap import fill
 from tkinter import *
 from tkinter import messagebox
+from turtle import width
 from dotenv import dotenv_values
 
 #-----------------------------------------------
 # local Library
 #-----------------------------------------------
 from libs.PythonJson import PythonJson as Pjson     #could be used from dotmap import DotMap
-from libs.YouTube import GetInfo, Download
 
 #-----------------------------------------------
 # Loading UI files
@@ -26,6 +26,8 @@ class App():
         self.main_window.mainloop()
     
     def setup(self):
+        self.content_height=self.main_window.winfo_height() - int(self.config.STATUS_BAR_HEIGHT), 
+        self.content_width=self.main_window.winfo_width()
         self.setupUI()
         self.center()
         self.main_window.bind("<Key>", self.handle_keypress)
@@ -36,41 +38,31 @@ class App():
         self.main_window.attributes('-alpha', self.config.ALPHA)
         self.main_window.title(self.config.APP_NAME + " " + self.config.APP_VERSION)
         self.main_window.config(bg=self.config.MAIN_BG_COLOR)
-        main_frame = MainFrame(config=self.config, master=self.main_window)
-        # main_frame.grid(row=0, column=0)
+        
+        self.statusBar = StatusBar(
+            config=self.config, 
+            master=self.main_window, 
+            height=self.config.STATUS_BAR_HEIGHT,
+            bg=self.config.STATUS_BAR_BG_COLOR
+        )
+        
+        main_frame = MainFrame(
+            config=self.config,
+            status=self.statusBar,
+            master=self.main_window, 
+            height=self.content_height,
+            width=self.content_width
+        )
         main_frame.pack(expand=True, fill=X)
+        # main_frame.pack_propagate(False)
+        # main_frame.grid(row=0, column=0)
         # about_frame = AboutFrame(self.main_window, self.config)
         # about_frame.pack()
         
-        self.statusBar = StatusBar(config=self.config, master=self.main_window, height=self.config.STATUS_BAR_HEIGHT)
         self.statusBar.pack_propagate(False)
-        # self.statusBar.grid(row=1, column=0)
-        self.statusBar.pack(side=BOTTOM, expand=True, fill=X)
+        self.statusBar.pack(side=BOTTOM, fill=X)
         
         self.statusBar.updateStatus("App initialized!")
-    
-    def get_info(self):
-        url = "https://www.youtube.com/watch?v=I2PsRRgRKto"
-        purl = "https://www.youtube.com/playlist?list=PL7yh-TELLS1G9mmnBN3ZSY8hYgJ5kBOg-"
-        info_thread = GetInfo(purl)
-        info_thread.daemon = True        ## auto clear the thread once the main app is terminated
-        info_thread.start()
-        self.check_thread(info_thread)
-    
-    def download(self):
-        if self.yt is None:
-            self.main_window.after(500, lambda: self.download())
-        else:
-            downlod_thread = Download(self.yt)
-            downlod_thread.daemon = True    ## auto clear the thread once the main app is terminated
-            downlod_thread.start()
-        
-    def check_thread(self, thread):
-        if thread.is_alive():
-            self.main_window.after(500, lambda: self.check_thread(thread))
-        else:
-            self.yt = thread.info
-            return True
         
     def center(self):
         """
