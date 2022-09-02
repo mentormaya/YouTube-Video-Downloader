@@ -56,15 +56,22 @@ class StatusBar(Frame):
         self.copyrightLabel.pack(side=LEFT)
         
         self.statusBar.pack(padx=10, expand=True, fill=X, side=BOTTOM)
+        self.setWidth()
+    
+    def setWidth(self):
+        if 'App initialized!' not in self.status.get():
+            print('App not initialized yet!')
+            self.after(self.app_config.TIME_UPDATE_INTERVAL, self.setWidth)
+        else:
+            status_width = (self.statusBar.winfo_width() - self.timeLabel.winfo_width() - self.copyrightLabel.winfo_width()) // 10
+            print(f'setting width: {status_width}')
+            self.statusLabel.config(width=status_width)
     
     def updateTime(self):
         self.datetime.set(ndt.now().strftime("%d %b, %Y %I:%M:%S %p"))
         self.after(self.app_config.TIME_UPDATE_INTERVAL, self.updateTime)
         
     def updateStatus(self, status):
-        status_width = (self.statusBar.winfo_width() - self.timeLabel.winfo_width() - self.copyrightLabel.winfo_width()) // 8
-        print(f'setting width: {status_width}')
-        self.statusLabel.config(width=status_width, bg='red')
         print(f'{status}')
         self.status.set(status)
         
