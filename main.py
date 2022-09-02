@@ -1,47 +1,70 @@
+from textwrap import fill
 from tkinter import *
-from tkinter import ttk
+from tkinter import messagebox
+from turtle import width
 from dotenv import dotenv_values
 
 #-----------------------------------------------
 # local Library
 #-----------------------------------------------
 from libs.PythonJson import PythonJson as Pjson     #could be used from dotmap import DotMap
-from libs.YouTube import Downloader
+
+#-----------------------------------------------
+# Loading UI files
+#-----------------------------------------------
+from frames.MainFrame import MainFrame
+from frames.AboutFrame import AboutFrame
+from frames.StatusBar import StatusBar
 
 config = Pjson(dotenv_values(".env"))
 class App():
     def __init__(self):
         self.main_window = Tk()
         self.config = config
-        self.downloader = Downloader()
+        self.yt = None
         self.setup()
         self.main_window.mainloop()
     
     def setup(self):
+        self.content_height=self.main_window.winfo_height() - int(self.config.STATUS_BAR_HEIGHT), 
+        self.content_width=self.main_window.winfo_width()
         self.setupUI()
         self.center()
         self.main_window.bind("<Key>", self.handle_keypress)
-        self.download()
+        self.main_window.update_idletasks()
     
     def setupUI(self):
         self.main_window.geometry(self.config.APP_SIZE)
         if self.config.ALPHA:
             self.main_window.attributes('-alpha', self.config.ALPHA)
         self.main_window.title(self.config.APP_NAME + " " + self.config.APP_VERSION)
-        main_frame = ttk.Frame()
-        main_frame.pack()
-        ttk.Label(
-            master=main_frame, 
-            text=   "Welcome to YouTube Downloader",
-            font=   ("Monaco", 20, "bold")
-        ).pack(padx=10, pady=10)
-    
-    def download(self):
-        url = "https://www.youtube.com/watch?v=I2PsRRgRKto"
-        self.downloader.get(url)
-        self.downloader.download()
+        self.main_window.config(bg=self.config.MAIN_BG_COLOR)
         
-    
+        self.statusBar = StatusBar(
+            config=self.config, 
+            master=self.main_window, 
+            height=self.config.STATUS_BAR_HEIGHT,
+            bg=self.config.STATUS_BAR_BG_COLOR
+        )
+        
+        main_frame = MainFrame(
+            config=self.config,
+            status=self.statusBar,
+            master=self.main_window, 
+            height=self.content_height,
+            width=self.content_width
+        )
+        main_frame.pack(expand=True, fill=X)
+        # main_frame.pack_propagate(False)
+        # main_frame.grid(row=0, column=0)
+        # about_frame = AboutFrame(self.main_window, self.config)
+        # about_frame.pack()
+        
+        self.statusBar.pack_propagate(False)
+        self.statusBar.pack(side=BOTTOM, fill=X)
+        
+        self.statusBar.updateStatus("App initialized!")
+        
     def center(self):
         """
         centers a tkinter window
@@ -67,7 +90,10 @@ class App():
         else:
             print(event)
     
-    def quitApp(self):
+    def quitApp(self, confirmation = False):
+        if confirmation:
+            if not messagebox.askokcancel("Quit", "Do you want to exit?"):
+                return
         self.main_window.destroy()
 
 if __name__ == '__main__':
