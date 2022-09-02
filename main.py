@@ -54,7 +54,7 @@ class App():
             height=self.content_height,
             width=self.content_width
         )
-        main_frame.pack(expand=True, fill=X)
+        main_frame.pack(expand=True, fill=BOTH)
         # main_frame.pack_propagate(False)
         # main_frame.grid(row=0, column=0)
         # about_frame = AboutFrame(self.main_window, self.config)

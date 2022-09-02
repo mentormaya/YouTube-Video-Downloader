@@ -10,12 +10,19 @@ class Header(Frame):
         self.drawUI()
     
     def drawUI(self):
+        imageLabel = Label(
+            master=self,
+            text='Logo',
+            bg=self.app_config.MAIN_BG_COLOR
+        ).pack()
+        
         headerLabel = Label(
             master = self, 
+            bg=self.app_config.MAIN_BG_COLOR,
             text = self.text,
             font = ("Monaco", 20, "bold")
         )
-        headerLabel.pack(padx=10, pady=10)
+        headerLabel.pack()
         
         seperator = Separator(self, orient='horizontal')
         seperator.pack(fill=X)

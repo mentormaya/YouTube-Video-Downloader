@@ -1,6 +1,8 @@
+import sys
 from tkinter import *
 
 from frames.Header import Header
+from frames.Console import Console
 
 from libs.YouTube import GetInfo, Download
 
@@ -14,7 +16,10 @@ class MainFrame(Frame):
         self.drawUI()
     
     def drawUI(self):
-        mainContainer = Frame(self, bg=self.app_config.MAIN_BG_COLOR)
+        mainContainer = Frame(
+            master=self,
+            bg=self.app_config.MAIN_BG_COLOR
+        )
         
         self.header = Header(text=self.title, config=self.app_config, master=mainContainer)
         self.header.pack()
@@ -23,11 +28,34 @@ class MainFrame(Frame):
             text ="Get Details", 
             command = self.get_info, 
             master = mainContainer,
-            cursor='hand2'
+            cursor='hand2',
+            width=50,
+            height=2,
+            relief=GROOVE,
+            fg=self.app_config.PRIMARY_TEXT_COLOR,
+            disabledforeground=self.app_config.DISABLED_TEXT_COLOR,
+            bg=self.app_config.PRIMARY_COLOR,
+            activebackground = self.app_config.PRIMARY_COLOR_ACTIVE,
         )
         self.download_btn.pack(padx=10, pady=10)
         
+        self.console_text = Text(
+            master=mainContainer,
+            highlightthickness=self.app_config.CONSOLE_BORDER_THICKNESS,
+            selectborderwidth=self.app_config.CONSOLE_BORDER_THICKNESS,
+            highlightbackground=self.app_config.CONSOLE_BORDER_COLOR,
+            bg=self.app_config.CONSOLE_BACKGROUD_COLOR,
+            fg=self.app_config.CONSOLE_TEXT_COLOR,
+            height=self.app_config.CONSOLE_HEIGHT,
+            font=(self.app_config.CONSOLE_FONT, self.app_config.CONSOLE_FONT_SIZE)
+        )
+        self.console = Console(self.console_text)
+        # replace sys.stdout with our object
+        sys.stdout = self.console
+        self.console_text.pack(pady=10, padx=10, ipadx=10, ipady=10, side=BOTTOM, expand=True, fill=BOTH)
+        
         mainContainer.pack(expand=True, fill=BOTH)
+        
         self.status.updateStatus('MainFrame Loaded!')
     
     def get_info(self):
@@ -35,7 +63,7 @@ class MainFrame(Frame):
         purl = "https://www.youtube.com/playlist?list=PL7yh-TELLS1G9mmnBN3ZSY8hYgJ5kBOg-"
         self.download_btn.config(state=DISABLED)
         self.status.updateStatus("Fetching Details...")
-        info_thread = GetInfo(purl, self.status)
+        info_thread = GetInfo(url, self.status)
         info_thread.daemon = True        ## auto clear the thread once the main app is terminated
         info_thread.start()
         self.check_info_complete(info_thread)
@@ -45,7 +73,7 @@ class MainFrame(Frame):
             self.main_window.after(500, lambda: self.download())
         else:
             self.download_btn.config(state=DISABLED)
-            self.status.updateStatus(f"Downloading {self.yt.title}...")
+            # self.status.updateStatus(f"Downloading {self.yt.title}...")
             downlod_thread = Download(self.yt)
             downlod_thread.daemon = True    ## auto clear the thread once the main app is terminated
             downlod_thread.start()

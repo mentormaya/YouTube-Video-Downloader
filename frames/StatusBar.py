@@ -64,7 +64,7 @@ class StatusBar(Frame):
             self.after(self.app_config.TIME_UPDATE_INTERVAL, self.setWidth)
         else:
             status_width = (self.statusBar.winfo_width() - self.timeLabel.winfo_width() - self.copyrightLabel.winfo_width()) // 10
-            print(f'setting width: {status_width}')
+            # print(f'setting width: {status_width}')
             self.statusLabel.config(width=status_width)
     
     def updateTime(self):
@@ -74,4 +74,3 @@ class StatusBar(Frame):
     def updateStatus(self, status):
         print(f'{status}')
         self.status.set(status)
-        
