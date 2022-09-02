@@ -1,5 +1,6 @@
 engineering-notation==0.6.0
 nepali-datetime==1.0.7
+Pillow==9.2.0
 python-dotenv==0.20.0
 pytube==12.1.0
 tk-tools==0.16.0

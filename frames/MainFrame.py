@@ -21,7 +21,12 @@ class MainFrame(Frame):
             bg=self.app_config.MAIN_BG_COLOR
         )
         
-        self.header = Header(text=self.title, config=self.app_config, master=mainContainer)
+        self.header = Header(
+            text=self.title, 
+            config=self.app_config, 
+            master=mainContainer,
+            bg=self.app_config.MAIN_BG_COLOR
+        )
         self.header.pack()
         
         self.download_btn = Button(
