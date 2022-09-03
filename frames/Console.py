@@ -24,8 +24,11 @@ class Console(): # create file like object
         )
 
     def write(self, text):
+        self.textbox.configure(state="normal")  # make field editable
         self.textbox.insert(tk.END, text) # write text to textbox
         self.textbox.see("end")    # could also scroll to end of textbox here to make sure always visible
+        self.textbox.configure(state="disabled")  # make field readonly
+
 
     def flush(self): # needed for file like object
         pass

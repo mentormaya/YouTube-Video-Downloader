@@ -29,6 +29,10 @@ class App():
     def setup(self):
         self.content_height=self.main_window.winfo_height() - int(self.config.STATUS_BAR_HEIGHT), 
         self.content_width=self.main_window.winfo_width()
+        if 'darwin' in self.config.OS.lower():
+            self.main_window.iconbitmap('./assets/images/YouTube.icns')
+        else:
+            self.main_window.iconbitmap('./assets/images/YouTube.ico')
         self.setupUI()
         self.center()
         self.main_window.bind("<Key>", self.handle_keypress)

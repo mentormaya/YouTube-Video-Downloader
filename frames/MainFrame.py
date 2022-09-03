@@ -61,6 +61,7 @@ class MainFrame(Frame):
             master=self.inputContainer,
             bg='white',
             fg=self.app_config.DISABLED_TEXT_COLOR,
+            highlightthickness=0
         )
         self.url_input.grid(row=0, column=1, columnspan=3, sticky=EW, padx=10)
         
@@ -193,8 +194,11 @@ class MainFrame(Frame):
             font=(self.app_config.CONSOLE_FONT, self.app_config.CONSOLE_FONT_SIZE)
         )
         self.console = Console(self.console_text)
+        
         # replace sys.stdout with our object
         sys.stdout = self.console
+        sys.stderr = self.console
+        
         self.console_text.pack(pady=10, padx=10, ipadx=10, ipady=10, side=BOTTOM, expand=True, fill=BOTH)
         
         mainContainer.pack(expand=True, fill=BOTH)
@@ -227,7 +231,6 @@ class MainFrame(Frame):
             self.main_window.after(500, lambda: self.download())
         else:
             self.download_btn.config(state=DISABLED)
-            # self.status.updateStatus(f"Downloading {self.yt.title}...")
             downlod_thread = Download(self.yt, out_path=self.path_to_save)
             downlod_thread.daemon = True    ## auto clear the thread once the main app is terminated
             downlod_thread.start()
