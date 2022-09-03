@@ -1,6 +1,7 @@
 import sys
 
 from tkinter import *
+from tkinter import filedialog
 
 from tkmacosx import Button as MacButton
 
@@ -18,6 +19,7 @@ class MainFrame(Frame):
         self.title = f"{self.app_config.APP_NAME}"
         self.subtitle = f'{self.app_config.APP_VERSION} coded with ❤️ by {self.app_config.AUTHOR}'
         self.playlist_ckeck = IntVar()
+        self.path_to_save = None
         self.drawUI()
     
     def drawUI(self):
@@ -69,14 +71,18 @@ class MainFrame(Frame):
             fg=self.app_config.DISABLED_TEXT_COLOR,
         )
         
-        self.playlist_checkbox.grid(row=1, column=1, columnspan=3, sticky=W, pady=10)
+        self.playlist_checkbox.grid(row=1, column=1, columnspan=3, sticky=W, pady=5)
         
         self.file_browserLabel = Label(
             master=self.inputContainer,
             bg=self.app_config.MAIN_BG_COLOR,
             fg=self.app_config.DISABLED_TEXT_COLOR,
-            text='Select a Folder to Save the file.'
+            text=f'Download will be saved to:{self.app_config.OUTPUT_FOLDER}'
         )
+        if self.path_to_save is not None:
+            self.file_browserLabel.config(
+                text=f'Download will be saved to: {self.path_to_save}'
+            )
         self.file_browserLabel.grid(row=2, column=0, columnspan=2, sticky=E)
         
         if 'darwin' in self.app_config.OS.lower():
@@ -170,9 +176,9 @@ class MainFrame(Frame):
                 activebackground = self.app_config.PRIMARY_COLOR_ACTIVE,
             )
         
-        self.file_browser_btn.grid(row=2, column=2, columnspan=2, padx=10, pady=10)
-        self.cancel_btn.grid(row=3, column=0, columnspan=3, padx=10, pady=10)
-        self.download_btn.grid(row=3, column=2, columnspan=2, padx=10, pady=10)
+        self.file_browser_btn.grid(row=2, column=2, columnspan=2, padx=10, pady=5)
+        self.cancel_btn.grid(row=3, column=0, columnspan=3, padx=10, pady=5)
+        self.download_btn.grid(row=3, column=2, columnspan=2, padx=10, pady=5)
         
         self.inputContainer.pack(padx=60, pady=10, expand=True, fill=X)
         
@@ -196,14 +202,19 @@ class MainFrame(Frame):
         self.status.updateStatus('MainFrame Loaded!')
     
     def setDownloadPath(self):
-        print('Setting Download Path...')
+        self.path_to_save = filedialog.askdirectory()
+        self.file_browserLabel.config(text=f'Downloads saved to: {self.path_to_save}')
+        print(self.path_to_save)
     
     def clear_download(self):
         print('Clearing downloads')
     
     def get_info(self):
-        url = "https://www.youtube.com/watch?v=I2PsRRgRKto"
-        purl = "https://www.youtube.com/playlist?list=PL7yh-TELLS1G9mmnBN3ZSY8hYgJ5kBOg-"
+        url = self.url_input.get()
+        if not url:
+            print("URL: ",url)
+            print("Please Enter Your URL to proceed!")
+            return
         self.download_btn.config(state=DISABLED)
         self.status.updateStatus("Fetching Details...")
         info_thread = GetInfo(url, self.status)
@@ -217,7 +228,7 @@ class MainFrame(Frame):
         else:
             self.download_btn.config(state=DISABLED)
             # self.status.updateStatus(f"Downloading {self.yt.title}...")
-            downlod_thread = Download(self.yt)
+            downlod_thread = Download(self.yt, out_path=self.path_to_save)
             downlod_thread.daemon = True    ## auto clear the thread once the main app is terminated
             downlod_thread.start()
             self.check_download_complete(downlod_thread)
