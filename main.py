@@ -93,7 +93,8 @@ class App():
             self.quitApp()
             return
         else:
-            print(event)
+            pass
+            # print(event)
     
     def quitApp(self, confirmation = False):
         if confirmation:
