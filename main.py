@@ -1,4 +1,4 @@
-from textwrap import fill
+import platform
 from tkinter import *
 from tkinter import messagebox
 from turtle import width
@@ -21,6 +21,7 @@ class App():
     def __init__(self):
         self.main_window = Tk()
         self.config = config
+        self.config.OS = platform.system()
         self.yt = None
         self.setup()
         self.main_window.mainloop()
