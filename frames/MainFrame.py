@@ -59,6 +59,7 @@ class MainFrame(Frame):
         
         self.url_input = Entry(
             master=self.inputContainer,
+            font=('Times', 12, 'italic'),
             bg='white',
             fg=self.app_config.DISABLED_TEXT_COLOR,
             highlightthickness=0
@@ -86,99 +87,57 @@ class MainFrame(Frame):
             )
         self.file_browserLabel.grid(row=2, column=0, columnspan=2, sticky=E)
         
-        if 'darwin' in self.app_config.OS.lower():
-            print('macOS specific settings applied!')
-            self.download_btn = MacButton(
-                text ="Get Details", 
-                command = self.get_info, 
-                master = self.inputContainer,
-                cursor='hand2',
-                width=200,
-                height=40,
-                relief=GROOVE,
-                borderless=1,
-                bg=self.app_config.PRIMARY_COLOR,
-                fg=self.app_config.PRIMARY_TEXT_COLOR,
-                disabledforeground=self.app_config.DISABLED_TEXT_COLOR,
-                disabledbackground=self.app_config.DISABLED_BG_COLOR,
-                activebackground = self.app_config.PRIMARY_COLOR_ACTIVE,
-                overbackground = self.app_config.SECONDARY_COLOR
-            )
-            self.cancel_btn = MacButton(
-                text ="Clear", 
-                command = self.clear_download, 
-                master = self.inputContainer,
-                cursor='hand2',
-                width=200,
-                height=40,
-                relief=GROOVE,
-                borderless=1,
-                bg=self.app_config.PRIMARY_COLOR,
-                fg=self.app_config.PRIMARY_TEXT_COLOR,
-                disabledforeground=self.app_config.DISABLED_TEXT_COLOR,
-                disabledbackground=self.app_config.DISABLED_BG_COLOR,
-                activebackground = self.app_config.PRIMARY_COLOR_ACTIVE,
-                overbackground = self.app_config.SECONDARY_COLOR
-            )
-            self.file_browser_btn = MacButton(
-                text ="Browse", 
-                command = self.setDownloadPath, 
-                master = self.inputContainer,
-                cursor='hand2',
-                width=150,
-                height=40,
-                relief=GROOVE,
-                borderless=1,
-                bg=self.app_config.PRIMARY_COLOR,
-                fg=self.app_config.PRIMARY_TEXT_COLOR,
-                disabledforeground=self.app_config.DISABLED_TEXT_COLOR,
-                disabledbackground=self.app_config.DISABLED_BG_COLOR,
-                activebackground = self.app_config.PRIMARY_COLOR_ACTIVE,
-                overbackground = self.app_config.SECONDARY_COLOR
-            )
-        else:
-            self.download_btn = Button(
-                text ="Get Details", 
-                command = self.get_info, 
-                master = self.inputContainer,
-                cursor='hand2',
-                width=50,
-                height=2,
-                relief=GROOVE,
-                bg=self.app_config.PRIMARY_COLOR,
-                fg=self.app_config.PRIMARY_TEXT_COLOR,
-                disabledforeground=self.app_config.DISABLED_TEXT_COLOR,
-                activebackground = self.app_config.PRIMARY_COLOR_ACTIVE,
-            )
-            self.cancel_btn = Button(
-                text ="Clear", 
-                command = self.clear_download, 
-                master = self.inputContainer,
-                cursor='hand2',
-                width=50,
-                height=2,
-                relief=GROOVE,
-                bg=self.app_config.PRIMARY_COLOR,
-                fg=self.app_config.PRIMARY_TEXT_COLOR,
-                disabledforeground=self.app_config.DISABLED_TEXT_COLOR,
-                activebackground = self.app_config.PRIMARY_COLOR_ACTIVE,
-            )
-            self.file_browser_btn = Button(
-                text ="Browse", 
-                command = self.clear_download, 
-                master = self.inputContainer,
-                cursor='hand2',
-                width=40,
-                height=2,
-                relief=GROOVE,
-                bg=self.app_config.PRIMARY_COLOR,
-                fg=self.app_config.PRIMARY_TEXT_COLOR,
-                disabledforeground=self.app_config.DISABLED_TEXT_COLOR,
-                activebackground = self.app_config.PRIMARY_COLOR_ACTIVE,
-            )
+        self.download_btn = MacButton(
+            text ="Get Details", 
+            command = self.get_info, 
+            master = self.inputContainer,
+            cursor='hand2',
+            width=200,
+            height=40,
+            relief=GROOVE,
+            borderless=1,
+            bg=self.app_config.PRIMARY_COLOR,
+            fg=self.app_config.PRIMARY_TEXT_COLOR,
+            disabledforeground=self.app_config.DISABLED_TEXT_COLOR,
+            disabledbackground=self.app_config.DISABLED_BG_COLOR,
+            activebackground = self.app_config.PRIMARY_COLOR_ACTIVE,
+            overbackground = self.app_config.SECONDARY_COLOR
+        )
+        self.cancel_btn = MacButton(
+            text ="Clear", 
+            command = self.clear_download, 
+            master = self.inputContainer,
+            cursor='hand2',
+            width=200,
+            height=40,
+            relief=GROOVE,
+            borderless=1,
+            bg=self.app_config.PRIMARY_COLOR,
+            fg=self.app_config.PRIMARY_TEXT_COLOR,
+            disabledforeground=self.app_config.DISABLED_TEXT_COLOR,
+            disabledbackground=self.app_config.DISABLED_BG_COLOR,
+            activebackground = self.app_config.PRIMARY_COLOR_ACTIVE,
+            overbackground = self.app_config.SECONDARY_COLOR
+        )
+        self.file_browser_btn = MacButton(
+            text ="Browse", 
+            command = self.setDownloadPath, 
+            master = self.inputContainer,
+            cursor='hand2',
+            width=150,
+            height=40,
+            relief=GROOVE,
+            borderless=1,
+            bg=self.app_config.PRIMARY_COLOR,
+            fg=self.app_config.PRIMARY_TEXT_COLOR,
+            disabledforeground=self.app_config.DISABLED_TEXT_COLOR,
+            disabledbackground=self.app_config.DISABLED_BG_COLOR,
+            activebackground = self.app_config.PRIMARY_COLOR_ACTIVE,
+            overbackground = self.app_config.SECONDARY_COLOR
+        )
         
         self.file_browser_btn.grid(row=2, column=2, columnspan=2, padx=10, pady=5)
-        self.cancel_btn.grid(row=3, column=0, columnspan=3, padx=10, pady=5)
+        self.cancel_btn.grid(row=3, column=0, columnspan=2, padx=10, pady=5)
         self.download_btn.grid(row=3, column=2, columnspan=2, padx=10, pady=5)
         
         self.inputContainer.pack(padx=60, pady=10, expand=True, fill=X)
@@ -206,9 +165,11 @@ class MainFrame(Frame):
         self.status.updateStatus('MainFrame Loaded!')
     
     def setDownloadPath(self):
-        self.path_to_save = filedialog.askdirectory()
-        self.file_browserLabel.config(text=f'Downloads saved to: {self.path_to_save}')
-        print(self.path_to_save)
+        path = filedialog.askdirectory()
+        if self.path_to_save is not None:
+            self.path_to_save = path
+            self.file_browserLabel.config(text=f'Downloads saved to: {self.path_to_save}')
+            print(f'Downloads saved to: {self.path_to_save}')
     
     def clear_download(self):
         print('Clearing downloads')

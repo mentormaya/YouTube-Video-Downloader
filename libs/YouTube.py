@@ -76,11 +76,11 @@ class Downloader():
         for index, stream in enumerate(video.streams):
             self.update(f'{index}. {stream.mime_type.split("/")[1]} {stream.resolution}')
         res = input("Choose the quality?")
-        self.update(f'Resolution: {video.streams[res].resolution} ({video.streams.get_highest_resolution().subtype} - {video.streams.get_highest_resolution().type}) for {video.title} is selected...')
+        self.update(f'Resolution: {video.streams[res].resolution} ({video.streams.get_highest_resolution().subtype} - {video.streams.get_highest_resolution().type}) for "{video.title}" is selected...')
         return video.streams[res]
             
     def get_highest_resolution(self, video):
-        self.update(f'Highest Resolution:  {video.streams.get_highest_resolution().resolution} ({video.streams.get_highest_resolution().subtype} - {video.streams.get_highest_resolution().type}) for {video.title} is selected...')
+        self.update(f'Highest Resolution:  {video.streams.get_highest_resolution().resolution} ({video.streams.get_highest_resolution().subtype} - {video.streams.get_highest_resolution().type}) for "{video.title}" is selected...')
         return video.streams.get_highest_resolution()
 
     def get_stream(self, video, resolution):

@@ -1,4 +1,3 @@
-from doctest import master
 from tkinter import *
 from tkinter.ttk import Separator
 from PIL import Image, ImageTk
