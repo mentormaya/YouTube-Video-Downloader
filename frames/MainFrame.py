@@ -19,7 +19,7 @@ class MainFrame(Frame):
         self.title = f"{self.app_config.APP_NAME}"
         self.subtitle = f'{self.app_config.APP_VERSION} coded with ❤️ by {self.app_config.AUTHOR}'
         self.playlist_ckeck = IntVar()
-        self.path_to_save = None
+        self.path_to_save = self.app_config.OUTPUT_FOLDER
         self.drawUI()
     
     def drawUI(self):
@@ -79,12 +79,8 @@ class MainFrame(Frame):
             master=self.inputContainer,
             bg=self.app_config.MAIN_BG_COLOR,
             fg=self.app_config.DISABLED_TEXT_COLOR,
-            text=f'Download will be saved to:{self.app_config.OUTPUT_FOLDER}'
+            text=f'Download will be saved to:{self.path_to_save}'
         )
-        if self.path_to_save is not None:
-            self.file_browserLabel.config(
-                text=f'Download will be saved to: {self.path_to_save}'
-            )
         self.file_browserLabel.grid(row=2, column=0, columnspan=2, sticky=E)
         
         self.download_btn = MacButton(
@@ -165,7 +161,7 @@ class MainFrame(Frame):
         self.status.updateStatus('MainFrame Loaded!')
     
     def setDownloadPath(self):
-        path = filedialog.askdirectory()
+        path = filedialog.askdirectory(initialdir=self.path_to_save)
         if self.path_to_save is not None:
             self.path_to_save = path
             self.file_browserLabel.config(text=f'Downloads saved to: {self.path_to_save}')

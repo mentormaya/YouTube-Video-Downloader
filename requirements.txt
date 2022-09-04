@@ -1,3 +1,4 @@
+colorama==0.4.5
 colour==0.1.5
 engineering-notation==0.6.0
 nepali-datetime==1.0.7
@@ -6,3 +7,4 @@ python-dotenv==0.20.0
 pytube==12.1.0
 tk-tools==0.16.0
 tkmacosx==1.0.5
+tqdm==4.64.1
