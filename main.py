@@ -1,5 +1,6 @@
 import platform
 from tkinter import *
+from tqdm.auto import tqdm
 from tkinter import messagebox
 from turtle import width
 from dotenv import dotenv_values

@@ -1,4 +1,5 @@
 from tkinter import *
+from tqdm.auto import tqdm
 
 from frames.Header import Header
 

@@ -1,4 +1,5 @@
 from tkinter import *
+from tqdm.auto import tqdm
 from tkinter.ttk import Separator
 from PIL import Image, ImageTk
 

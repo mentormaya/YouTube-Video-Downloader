@@ -1,7 +1,7 @@
 from datetime import datetime as dt
 from nepali_datetime import datetime as ndt
 from tkinter import *
-import ctypes
+from tqdm.auto import tqdm
 from tkinter.ttk import Separator
 
 FONT_SIZE = 12

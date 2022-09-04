@@ -1,5 +1,5 @@
 import json
-from tqdm import tqdm
+from tqdm.auto import tqdm
 from threading import Thread
 from dotenv import dotenv_values
 from pytube import YouTube, Playlist, Stream
@@ -76,7 +76,6 @@ class Downloader():
     
     def updateProgress(self, stream: Stream, data_chunk: bytes, bytes_remaining: int):
         self.progressbar.update(len(data_chunk))
-        # print(data_chunk, bytes_remaining)
     
     def select_resolution(self, video):
         for index, stream in enumerate(video.streams):
@@ -117,13 +116,13 @@ class Downloader():
     
     def save(self, video, path):
         self.stream = self.get_stream(video, self.resolution)
-        self.progressbar = tqdm(total=self.stream.filesize, unit="bytes")
+        self.progressbar = tqdm(total=self.stream.filesize, unit="bytes", ncols=int(self.config.TQDM_WIDTH))
         self.stream.download(path)
         self.progressbar.close()
     
     def save_all(self, videos, path):
         for video in videos:
             self.stream = self.get_stream(video, self.resolution)
-            self.progressbar = tqdm(total=self.stream.filesize, unit="bytes")
+            self.progressbar = tqdm(total=self.stream.filesize, unit="bytes", ncols=int(self.config.TQDM_WIDTH))
             self.stream.download(path)
             self.progressbar.close()

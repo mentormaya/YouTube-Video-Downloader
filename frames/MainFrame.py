@@ -1,8 +1,8 @@
 import sys
+from tqdm.auto import tqdm
 
 from tkinter import *
 from tkinter import filedialog
-
 from tkmacosx import Button as MacButton
 
 from frames.Header import Header
