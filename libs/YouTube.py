@@ -1,4 +1,4 @@
-import json
+import re
 from tqdm.auto import tqdm
 from threading import Thread
 from dotenv import dotenv_values
@@ -66,7 +66,7 @@ class Downloader():
         if url is not None:
             self.url = str(url)
         if 'playlist' in self.url:
-            self.yt = Playlist(self.url, on_progress_callback = self.updateProgress)
+            self.yt = Playlist(self.url)
             self.total_videos = len(self.yt.videos)
         else:
             self.yt = YouTube(self.url, on_progress_callback = self.updateProgress)
@@ -95,13 +95,20 @@ class Downloader():
             return self.select_resolution(video)
         #TODO for other resolutions
 
+    def sanitizeName(self, name):
+        name = re.split(r'[`!;:|.<>?~]', name)[0]
+        if len(name) > 15:
+            name = name[:15]
+        print(name)
+        return name
+    
     def download(self, out_path = None, resolution = 'highest'):
         if out_path is not None:
             self.output_folder = str(out_path)
         self.resolution = resolution
         full_out_location = self.output_folder + "/"
         if self.total_videos > 1:
-            full_out_location += self.title + "/"
+            full_out_location += self.sanitizeName(self.title) + "/"
         elif 'CID' in self.title:
             full_out_location += "CID" + "/"
         elif 'Crime Patrol' in self.title:
@@ -124,5 +131,6 @@ class Downloader():
         for video in videos:
             self.stream = self.get_stream(video, self.resolution)
             self.progressbar = tqdm(total=self.stream.filesize, unit="bytes", ncols=int(self.config.TQDM_WIDTH))
+            video.register_on_progress_callback(self.updateProgress)
             self.stream.download(path)
             self.progressbar.close()
