@@ -1,4 +1,5 @@
 import re
+import os, sys
 from tqdm.auto import tqdm
 from threading import Thread
 from dotenv import dotenv_values
@@ -9,7 +10,10 @@ from pytube import YouTube, Playlist, Stream
 #-----------------------------------------------
 from libs.PythonJson import PythonJson as Pjson     #could be used from dotmap import DotMap
 
-config = Pjson(dotenv_values(".env"))
+extDataDir = os.getcwd()
+if getattr(sys, 'frozen', False):
+    extDataDir = sys._MEIPASS
+config = Pjson(dotenv_values(os.path.join(extDataDir, '.env')))
 
 class GetInfo(Thread):
     def __init__(self, url = None, status = None):
