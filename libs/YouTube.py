@@ -75,7 +75,7 @@ class Downloader():
         return self
     
     def updateProgress(self, stream: Stream, data_chunk: bytes, bytes_remaining: int):
-        self.progressbar.update(len(data_chunk))
+        self.progressbar.update(len(data_chunk)/(1024*1024))
     
     def select_resolution(self, video):
         for index, stream in enumerate(video.streams):
@@ -123,14 +123,14 @@ class Downloader():
     
     def save(self, video, path):
         self.stream = self.get_stream(video, self.resolution)
-        self.progressbar = tqdm(total=self.stream.filesize, unit="bytes", ncols=int(self.config.TQDM_WIDTH))
+        self.progressbar = tqdm(total=(self.stream.filesize/(1024*1024)), unit="bytes", ncols=int(self.config.TQDM_WIDTH))
         self.stream.download(path)
         self.progressbar.close()
     
     def save_all(self, videos, path):
         for video in videos:
             self.stream = self.get_stream(video, self.resolution)
-            self.progressbar = tqdm(total=self.stream.filesize, unit="bytes", ncols=int(self.config.TQDM_WIDTH))
+            self.progressbar = tqdm(total=(self.stream.filesize/(1024*1024)), unit="bytes", ncols=int(self.config.TQDM_WIDTH))
             video.register_on_progress_callback(self.updateProgress)
             self.stream.download(path)
             self.progressbar.close()
