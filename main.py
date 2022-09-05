@@ -1,8 +1,8 @@
+import os, sys
 import platform
 from tkinter import *
 from tqdm.auto import tqdm
 from tkinter import messagebox
-from turtle import width
 from dotenv import dotenv_values
 
 #-----------------------------------------------
@@ -17,7 +17,10 @@ from frames.MainFrame import MainFrame
 from frames.AboutFrame import AboutFrame
 from frames.StatusBar import StatusBar
 
-config = Pjson(dotenv_values(".env"))
+extDataDir = os.getcwd()
+if getattr(sys, 'frozen', False):
+    extDataDir = sys._MEIPASS
+config = Pjson(dotenv_values(os.path.join(extDataDir, '.env')))
 class App():
     def __init__(self):
         self.main_window = Tk()
