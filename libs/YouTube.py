@@ -135,7 +135,7 @@ class Downloader():
             desc=f'Downloading', 
             total=self.stream.filesize,
             ascii='░▓█',
-            unit="bytes", 
+            unit="Bytes", 
             unit_scale=True,
             unit_divisor=1024,
             ncols=int(self.config.TQDM_WIDTH)
@@ -149,7 +149,7 @@ class Downloader():
             self.progressbar = tqdm(
                 desc=f'{index + 1} of {self.total_videos}', 
                 total=self.stream.filesize, 
-                unit="bytes", 
+                unit="Bytes", 
                 unit_scale=True,
                 ascii='░▓█',
                 unit_divisor=1024,
