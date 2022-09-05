@@ -75,7 +75,7 @@ class Downloader():
         return self
     
     def updateProgress(self, stream: Stream, data_chunk: bytes, bytes_remaining: int):
-        self.progressbar.update(len(data_chunk)/(1024*1024))
+        self.progressbar.update(len(data_chunk))
     
     def select_resolution(self, video):
         for index, stream in enumerate(video.streams):
@@ -96,10 +96,14 @@ class Downloader():
         #TODO for other resolutions
 
     def sanitizeName(self, name):
-        name = re.split(r'[`!;:|.<>?~]', name)[0]
-        if len(name) > 15:
-            name = name[:15]
-        print(name)
+        names = re.split(r'[`!;:|.<>?~]', name)
+        for nm in names:
+            name = re.sub(' +', ' ', nm).strip()
+            if len(name) >= 5:
+                break
+        if len(name) > 25:
+            name = name[:25]
+        # print(f'Folder Name: {name}')
         return name
     
     def download(self, out_path = None, resolution = 'highest'):
@@ -123,14 +127,30 @@ class Downloader():
     
     def save(self, video, path):
         self.stream = self.get_stream(video, self.resolution)
-        self.progressbar = tqdm(total=(self.stream.filesize/(1024*1024)), unit="bytes", ncols=int(self.config.TQDM_WIDTH))
+        self.progressbar = tqdm(
+            desc=f'Downloading', 
+            total=self.stream.filesize,
+            ascii='░▓█',
+            unit="bytes", 
+            unit_scale=True,
+            unit_divisor=1024,
+            ncols=int(self.config.TQDM_WIDTH)
+        )
         self.stream.download(path)
         self.progressbar.close()
     
     def save_all(self, videos, path):
-        for video in videos:
+        for index, video in enumerate(videos):
             self.stream = self.get_stream(video, self.resolution)
-            self.progressbar = tqdm(total=(self.stream.filesize/(1024*1024)), unit="bytes", ncols=int(self.config.TQDM_WIDTH))
+            self.progressbar = tqdm(
+                desc=f'{index + 1} of {self.total_videos}', 
+                total=self.stream.filesize, 
+                unit="bytes", 
+                unit_scale=True,
+                ascii='░▓█',
+                unit_divisor=1024,
+                ncols=int(self.config.TQDM_WIDTH)
+            )
             video.register_on_progress_callback(self.updateProgress)
             self.stream.download(path)
             self.progressbar.close()

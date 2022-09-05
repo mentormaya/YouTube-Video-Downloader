@@ -30,6 +30,8 @@ class App():
     def setup(self):
         self.content_height=self.main_window.winfo_height() - int(self.config.STATUS_BAR_HEIGHT), 
         self.content_width=self.main_window.winfo_width()
+        photoIcon = PhotoImage(file = './assets/images/YouTube-icon.png')
+        self.main_window.iconphoto(False, photoIcon)
         if 'darwin' in self.config.OS.lower():
             self.main_window.iconbitmap('./assets/images/YouTube.icns')
         else:

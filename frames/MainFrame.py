@@ -16,6 +16,7 @@ class MainFrame(Frame):
         super(MainFrame, self).__init__(*args, **kwargs)
         self.app_config = config
         self.status = status
+        self.get = False
         self.title = f"{self.app_config.APP_NAME}"
         self.subtitle = f'{self.app_config.APP_VERSION} coded with ❤️ by {self.app_config.AUTHOR}'
         self.playlist_ckeck = IntVar()
@@ -168,7 +169,10 @@ class MainFrame(Frame):
             print(f'Downloads saved to: {self.path_to_save}')
     
     def clear_download(self):
+        if self.get:
+            self.download_btn.config(state=NORMAL, text="Get Info", command=self.get_info)
         print('Clearing downloads')
+        self.url_input.delete(0, END)
     
     def get_info(self):
         url = self.url_input.get()
@@ -199,6 +203,7 @@ class MainFrame(Frame):
         else:
             self.download_btn.config(state=NORMAL, text="Get Info", command=self.get_info)
             self.status.updateStatus(f"Downloaded: {self.yt.title}!")
+            self.get = False
             return True
         
     def check_info_complete(self, thread):
@@ -208,4 +213,5 @@ class MainFrame(Frame):
             self.download_btn.config(state=NORMAL, text="Download", command=self.download)
             self.status.updateStatus("Details Fetched!")
             self.yt = thread.info
+            self.get = True
             return True
