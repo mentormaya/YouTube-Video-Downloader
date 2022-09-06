@@ -26,6 +26,7 @@ class App():
         self.main_window = Tk()
         self.config = config
         self.config.OS = platform.system()
+        self.main_window.FILEBROWSER_PATH = os.path.join(os.getenv('WINDIR'), 'explorer.exe')
         self.yt = None
         self.setup()
         self.main_window.mainloop()

@@ -1,5 +1,5 @@
-import sys
-from tqdm.auto import tqdm
+import os, sys
+import subprocess
 
 from tkinter import *
 from tkinter import filedialog
@@ -9,7 +9,6 @@ from frames.Header import Header
 from frames.Console import Console
 
 from libs.YouTube import GetInfo, Download
-
 
 class MainFrame(Frame):
     def __init__(self, config, status, *args, **kwargs):
@@ -62,13 +61,14 @@ class MainFrame(Frame):
         
         self.url_input = Entry(
             master=self.inputContainer,
-            font=('Times', 12, 'italic'),
+            font=(self.app_config.URL_FONT, 12, 'italic'),
             bg='white',
             fg=self.app_config.DISABLED_TEXT_COLOR,
             highlightthickness=0,
             validate="key", 
             validatecommand=(url_input_validation, '%P')
         )
+        
         self.url_input.grid(row=0, column=1, columnspan=3, sticky=EW, padx=10)
         
         self.playlist_checkbox = Checkbutton(
@@ -81,11 +81,14 @@ class MainFrame(Frame):
         
         self.file_browserLabel = Label(
             master=self.inputContainer,
+            cursor='hand2',
             bg=self.app_config.MAIN_BG_COLOR,
             fg=self.app_config.DISABLED_TEXT_COLOR,
-            text=f'Download will be saved to:{self.path_to_save}'
+            font=(self.app_config.SYSTEM_FONT, 11),
+            text=f'Download will be saved to: {self.path_to_save}'
         )
         self.file_browserLabel.grid(row=2, column=0, columnspan=2, sticky=E)
+        self.file_browserLabel.bind("<Button-1>", lambda e: self.openExplorer(self.path_to_save))
         
         self.download_btn = MacButton(
             text ="Get Details", 
@@ -178,6 +181,14 @@ class MainFrame(Frame):
             self.file_browserLabel.config(text=f'Downloads saved to: {self.path_to_save}')
             print(f'Downloads saved to: {self.path_to_save}')
     
+    def openExplorer(self, path):
+        FILEBROWSER_PATH = self.master.FILEBROWSER_PATH
+        path = os.path.normpath(path)
+        if os.path.isdir(path):
+            subprocess.run([FILEBROWSER_PATH, path])
+        elif os.path.isfile(path):
+            subprocess.run([FILEBROWSER_PATH, '/select,', os.path.normpath(path)])
+
     def clear_download(self):
         if self.get:
             self.download_btn.config(state=NORMAL, text="Get Info", command=self.get_info)
