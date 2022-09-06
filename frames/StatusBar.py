@@ -22,15 +22,13 @@ class StatusBar(Frame):
         statusFrame = Frame(
             master = self,
             height=self.master.winfo_height(),
-            # bg=self.app_config.STATUS_BAR_BG_COLOR
-            bg='red'
+            bg=self.app_config.STATUS_BAR_BG_COLOR
         )
         
         statusFrame.pack(expand=True, fill=BOTH)
         
         seperator = Separator(statusFrame, orient='horizontal')
-        # seperator.pack(expand=True, fill=X)
-        # seperator.grid(row=0, column=0, sticky=EW, padx=0)
+        seperator.pack(expand=True, fill=X)
         
         self.statusBar = Frame(
             statusFrame,
@@ -49,7 +47,6 @@ class StatusBar(Frame):
             fg=self.app_config.STATUS_BAR_FG_COLOR,
             anchor=W
         )
-        # self.statusLabel.pack(side=LEFT, expand=True, fill=X)
         self.statusLabel.grid(row=0, column=0, sticky=SW)
         
         self.timeLabel = Label(
@@ -59,7 +56,6 @@ class StatusBar(Frame):
             bg=self.app_config.STATUS_BAR_BG_COLOR,
             fg=self.app_config.STATUS_BAR_FG_COLOR
         )
-        # self.timeLabel.pack(side=LEFT)
         self.timeLabel.grid(row=0, column=2, sticky=S)
         
         self.copyrightLabel = Label(
@@ -69,11 +65,9 @@ class StatusBar(Frame):
             bg=self.app_config.STATUS_BAR_BG_COLOR,
             fg=self.app_config.STATUS_BAR_FG_COLOR
         )
-        # self.copyrightLabel.pack(side=LEFT)
         self.copyrightLabel.grid(row=0, column=1, sticky=SE)
                 
         self.statusBar.pack(padx=10, expand=True, fill=X, side=BOTTOM)
-        # self.statusBar.grid(row=1, column=0, sticky=EW)
         self.setWidth()
     
     def setWidth(self):

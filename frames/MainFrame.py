@@ -187,7 +187,7 @@ class MainFrame(Frame):
             print(f'Downloads saved to: {self.path_to_save}')
     
     def openExplorer(self, path):
-        FILEBROWSER_PATH = self.master.FILEBROWSER_PATH
+        FILEBROWSER_PATH = self.master.master.FILEBROWSER_PATH
         path = os.path.normpath(path)
         if os.path.isdir(path):
             subprocess.run([FILEBROWSER_PATH, path])

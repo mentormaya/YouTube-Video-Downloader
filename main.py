@@ -30,7 +30,7 @@ class App():
         self.config.OS = platform.system()
         self.main_window.FILEBROWSER_PATH = os.path.join(os.getenv('WINDIR'), 'explorer.exe')
         self.yt = None
-        self.frame = 'MainFrame'
+        self.about = False
         self.setup()
         self.main_window.mainloop()
     
@@ -55,10 +55,12 @@ class App():
         self.main_window.title(self.config.APP_NAME + " " + self.config.APP_VERSION)
         self.main_window.config(bg=self.config.MAIN_BG_COLOR)
         
-        self.main_window.columnconfigure(index=0, weight=1)
-        self.main_window.columnconfigure(index=1, weight=5)
-        self.main_window.columnconfigure(index=2, weight=5)
-        self.main_window.columnconfigure(index=3, weight=1)
+        self.contentFrame = Frame(
+            master=self.main_window,
+            bg=self.config.MAIN_BG_COLOR,
+        )
+        
+        self.contentFrame.pack(expand=True, fill=X)
         
         self.statusBar = StatusBar(
             config=self.config, 
@@ -66,11 +68,16 @@ class App():
             height=self.config.STATUS_BAR_HEIGHT,
             bg=self.config.STATUS_BAR_BG_COLOR
         )
-        # self.statusBar.pack(side=BOTTOM, fill=X)
-        self.statusBar.grid(row=1, column=0, columnspan=4, sticky=EW)
+        self.statusBar.pack(side=BOTTOM, fill=X)
+        
+        self.contentFrame.columnconfigure(index=0, weight=1)
+        self.contentFrame.columnconfigure(index=1, weight=5)
+        self.contentFrame.columnconfigure(index=2, weight=5)
+        self.contentFrame.columnconfigure(index=3, weight=1)
+        
         
         info_image = Image.open("./assets/images/information-icon.png")
-        info_image = info_image.resize((50, 50), Image.Resampling.LANCZOS)
+        info_image = info_image.resize((int(self.config.INFO_BTN_DIMENSION), int(self.config.INFO_BTN_DIMENSION)), Image.Resampling.LANCZOS)
         info_photo = ImageTk.PhotoImage(info_image)
         
         self.infoBtn = MacButton(
@@ -87,28 +94,35 @@ class App():
         self.main_window.after(200, lambda: self.infoBtn.lift())
         
         self.about_frame = AboutFrame(
-            master=self.main_window, 
+            master=self.contentFrame, 
             config=self.config,
             status=self.statusBar
         )
-        # self.about_frame.pack(expand=True, fill=BOTH)
-        self.about_frame.grid(row=0, column=0, columnspan=4, sticky=EW)
         
         self.main_frame = MainFrame(
             config=self.config,
             status=self.statusBar,
-            master=self.main_window, 
+            master=self.contentFrame, 
             height=self.content_height,
             width=self.content_width
         )
-        # self.main_frame.pack(expand=True, fill=BOTH)
         self.main_frame.grid(row=0, column=0, columnspan=4, sticky=EW)
-        
+        self.main_frame.tkraise()
         self.statusBar.updateStatus("App initialized!")
     
     def showAbout(self):
-        if 'AboutFrame'.lower() in self.frame.lower():
-            self.about_frame.pack(expand=True, fill=BOTH)
+        if self.about:
+            # print('hiding about frame')
+            self.about_frame.grid_forget()
+            self.main_frame.grid(row=0, column=0, columnspan=4, sticky=EW)
+            self.main_frame.tkraise()
+            self.about = False
+        else:
+            # print('showing about frame')
+            self.main_frame.grid_forget()
+            self.about_frame.grid(row=0, column=0, columnspan=4, sticky=EW)
+            self.about_frame.tkraise()
+            self.about = True
     
     def center(self):
         """
