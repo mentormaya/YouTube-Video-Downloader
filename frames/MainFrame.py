@@ -47,8 +47,8 @@ class MainFrame(Frame):
         
         self.inputContainer.columnconfigure(index=0, weight=1)
         self.inputContainer.columnconfigure(index=1, weight=2)
-        self.inputContainer.columnconfigure(index=1, weight=2)
-        self.inputContainer.columnconfigure(index=1, weight=2)
+        self.inputContainer.columnconfigure(index=2, weight=2)
+        self.inputContainer.columnconfigure(index=3, weight=2)
         
         url_label = Label(
             master=self.inputContainer,

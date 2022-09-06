@@ -2,7 +2,10 @@ import os, sys
 import platform
 from tkinter import *
 from tkinter import messagebox
+from turtle import bgcolor, st
+from PIL import Image, ImageTk
 from dotenv import dotenv_values
+from tkmacosx import Button as MacButton
 
 #-----------------------------------------------
 # local Library
@@ -27,6 +30,7 @@ class App():
         self.config.OS = platform.system()
         self.main_window.FILEBROWSER_PATH = os.path.join(os.getenv('WINDIR'), 'explorer.exe')
         self.yt = None
+        self.frame = 'MainFrame'
         self.setup()
         self.main_window.mainloop()
     
@@ -51,31 +55,61 @@ class App():
         self.main_window.title(self.config.APP_NAME + " " + self.config.APP_VERSION)
         self.main_window.config(bg=self.config.MAIN_BG_COLOR)
         
+        self.main_window.columnconfigure(index=0, weight=1)
+        self.main_window.columnconfigure(index=1, weight=5)
+        self.main_window.columnconfigure(index=2, weight=5)
+        self.main_window.columnconfigure(index=3, weight=1)
+        
         self.statusBar = StatusBar(
             config=self.config, 
             master=self.main_window, 
             height=self.config.STATUS_BAR_HEIGHT,
             bg=self.config.STATUS_BAR_BG_COLOR
         )
+        # self.statusBar.pack(side=BOTTOM, fill=X)
+        self.statusBar.grid(row=1, column=0, columnspan=4, sticky=EW)
         
-        main_frame = MainFrame(
+        info_image = Image.open("./assets/images/information-icon.png")
+        info_image = info_image.resize((50, 50), Image.Resampling.LANCZOS)
+        info_photo = ImageTk.PhotoImage(info_image)
+        
+        self.infoBtn = MacButton(
+            master=self.main_window, 
+            image = info_photo, 
+            fg=self.config.PRIMARY_TEXT_COLOR,
+            bg=self.config.MAIN_BG_COLOR,
+            overbackground = self.config.PRIMARY_COLOR,
+            cursor='hand2', 
+            command=self.showAbout
+        )
+        self.infoBtn.image = info_photo
+        self.infoBtn.place(relx=1, rely=0, x = -2, y = 2, anchor=NE)
+        self.main_window.after(200, lambda: self.infoBtn.lift())
+        
+        self.about_frame = AboutFrame(
+            master=self.main_window, 
+            config=self.config,
+            status=self.statusBar
+        )
+        # self.about_frame.pack(expand=True, fill=BOTH)
+        self.about_frame.grid(row=0, column=0, columnspan=4, sticky=EW)
+        
+        self.main_frame = MainFrame(
             config=self.config,
             status=self.statusBar,
             master=self.main_window, 
             height=self.content_height,
             width=self.content_width
         )
-        main_frame.pack(expand=True, fill=BOTH)
-        # main_frame.pack_propagate(False)
-        # main_frame.grid(row=0, column=0)
-        # about_frame = AboutFrame(self.main_window, self.config)
-        # about_frame.pack()
-        
-        self.statusBar.pack_propagate(False)
-        self.statusBar.pack(side=BOTTOM, fill=X)
+        # self.main_frame.pack(expand=True, fill=BOTH)
+        self.main_frame.grid(row=0, column=0, columnspan=4, sticky=EW)
         
         self.statusBar.updateStatus("App initialized!")
-        
+    
+    def showAbout(self):
+        if 'AboutFrame'.lower() in self.frame.lower():
+            self.about_frame.pack(expand=True, fill=BOTH)
+    
     def center(self):
         """
         centers a tkinter window

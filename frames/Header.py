@@ -13,7 +13,7 @@ class Header(Frame):
     
     def drawUI(self):
         logo = Image.open(self.image)
-        logo = logo.resize((75, 75), Image.ANTIALIAS)
+        logo = logo.resize((75, 75), Image.Resampling.LANCZOS)
         
         logoImage = ImageTk.PhotoImage(logo)
         
