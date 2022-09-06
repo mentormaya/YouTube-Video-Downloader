@@ -1,7 +1,6 @@
 import os, sys
 import platform
 from tkinter import *
-from tqdm.auto import tqdm
 from tkinter import messagebox
 from dotenv import dotenv_values
 

@@ -17,7 +17,7 @@ class MainFrame(Frame):
         self.status = status
         self.get = False
         self.title = f"{self.app_config.APP_NAME}"
-        self.subtitle = f'{self.app_config.APP_VERSION} coded with ❤️ by {self.app_config.AUTHOR}'
+        self.subtitle = f'{self.app_config.APP_VERSION} coded with ❤ by {self.app_config.AUTHOR}'
         self.playlist_ckeck = IntVar()
         self.path_to_save = self.app_config.OUTPUT_FOLDER
         self.drawUI()
@@ -42,6 +42,7 @@ class MainFrame(Frame):
             text='Provide the details:',
             bg=self.app_config.MAIN_BG_COLOR,
             fg=self.app_config.DISABLED_TEXT_COLOR,
+            font=(self.app_config.SYSTEM_FONT, 11)
         )
         
         self.inputContainer.columnconfigure(index=0, weight=1)
@@ -54,6 +55,7 @@ class MainFrame(Frame):
             text='YouTube URL:',
             bg=self.app_config.MAIN_BG_COLOR,
             fg=self.app_config.DISABLED_TEXT_COLOR,
+            font=(self.app_config.SYSTEM_FONT, 11)
         )
         url_label.grid(row=0, column=0)
         
@@ -101,6 +103,7 @@ class MainFrame(Frame):
             borderless=1,
             bg=self.app_config.PRIMARY_COLOR,
             fg=self.app_config.PRIMARY_TEXT_COLOR,
+            font=(self.app_config.SYSTEM_FONT, 11),
             disabledforeground=self.app_config.DISABLED_TEXT_COLOR,
             disabledbackground=self.app_config.DISABLED_BG_COLOR,
             activebackground = self.app_config.PRIMARY_COLOR_ACTIVE,
@@ -117,6 +120,7 @@ class MainFrame(Frame):
             borderless=1,
             bg=self.app_config.PRIMARY_COLOR,
             fg=self.app_config.PRIMARY_TEXT_COLOR,
+            font=(self.app_config.SYSTEM_FONT, 11),
             disabledforeground=self.app_config.DISABLED_TEXT_COLOR,
             disabledbackground=self.app_config.DISABLED_BG_COLOR,
             activebackground = self.app_config.PRIMARY_COLOR_ACTIVE,
@@ -133,6 +137,7 @@ class MainFrame(Frame):
             borderless=1,
             bg=self.app_config.PRIMARY_COLOR,
             fg=self.app_config.PRIMARY_TEXT_COLOR,
+            font=(self.app_config.SYSTEM_FONT, 11),
             disabledforeground=self.app_config.DISABLED_TEXT_COLOR,
             disabledbackground=self.app_config.DISABLED_BG_COLOR,
             activebackground = self.app_config.PRIMARY_COLOR_ACTIVE,
@@ -168,7 +173,7 @@ class MainFrame(Frame):
         self.status.updateStatus('MainFrame Loaded!')
     
     def inputUpdated(self, value=''):
-        if (self.url_input.get() != '') and ('youtube.com/playlist' in self.url_input.get().lower()):
+        if (value != '') and ('youtube.com/playlist' in value.lower()):
             self.playlist_checkbox.grid(row=1, column=1, columnspan=3, sticky=W, pady=5)
         else:
             self.playlist_checkbox.grid_forget()
@@ -176,7 +181,7 @@ class MainFrame(Frame):
     
     def setDownloadPath(self):
         path = filedialog.askdirectory(initialdir=self.path_to_save)
-        if self.path_to_save is not None:
+        if path is not None and len(path) > 0:
             self.path_to_save = path
             self.file_browserLabel.config(text=f'Downloads saved to: {self.path_to_save}')
             print(f'Downloads saved to: {self.path_to_save}')

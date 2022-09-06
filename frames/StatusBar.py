@@ -30,7 +30,7 @@ class StatusBar(Frame):
         self.statusLabel = Label(
             master = self.statusBar,
             textvariable = self.status,
-            font = ("Times", FONT_SIZE, "italic"),
+            font = (self.app_config.URL_FONT, FONT_SIZE, "italic"),
             bg=self.app_config.STATUS_BAR_BG_COLOR,
             fg=self.app_config.STATUS_BAR_FG_COLOR,
             anchor=W
@@ -40,7 +40,7 @@ class StatusBar(Frame):
         self.timeLabel = Label(
             master = self.statusBar, 
             textvariable = self.datetime,
-            font = ("Times", FONT_SIZE), 
+            font = (self.app_config.SYSTEM_FONT, FONT_SIZE), 
             bg=self.app_config.STATUS_BAR_BG_COLOR,
             fg=self.app_config.STATUS_BAR_FG_COLOR
         )
@@ -49,7 +49,7 @@ class StatusBar(Frame):
         self.copyrightLabel = Label(
             master = self.statusBar, 
             text = self.copyright,
-            font = ("Times", FONT_SIZE, "italic"), 
+            font = (self.app_config.URL_FONT, FONT_SIZE, "italic"), 
             bg=self.app_config.STATUS_BAR_BG_COLOR,
             fg=self.app_config.STATUS_BAR_FG_COLOR
         )

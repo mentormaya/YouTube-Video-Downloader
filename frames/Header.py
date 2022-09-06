@@ -36,7 +36,7 @@ class Header(Frame):
             bg=self.app_config.MAIN_BG_COLOR,
             fg=self.app_config.SECONDARY_COLOR,
             text = self.text[0],
-            font = ("Monaco", 16, "bold")
+            font=(self.app_config.SYSTEM_FONT, 16)
         )
         headerLabel.pack(side=TOP, expand=True, fill=X)
         
@@ -45,7 +45,7 @@ class Header(Frame):
             bg=self.app_config.MAIN_BG_COLOR,
             fg=self.app_config.SECONDARY_COLOR,
             text = self.text[1],
-            font = ("Monaco", 12, "bold"),
+            font=(self.app_config.URL_FONT, 11, 'italic'),
             anchor=W,
             justify=LEFT,
         )
