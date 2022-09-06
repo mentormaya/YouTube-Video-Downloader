@@ -58,12 +58,16 @@ class MainFrame(Frame):
         )
         url_label.grid(row=0, column=0)
         
+        url_input_validation = self.register(self.inputUpdated)
+        
         self.url_input = Entry(
             master=self.inputContainer,
             font=('Times', 12, 'italic'),
             bg='white',
             fg=self.app_config.DISABLED_TEXT_COLOR,
-            highlightthickness=0
+            highlightthickness=0,
+            validate="key", 
+            validatecommand=(url_input_validation, '%P')
         )
         self.url_input.grid(row=0, column=1, columnspan=3, sticky=EW, padx=10)
         
@@ -73,8 +77,7 @@ class MainFrame(Frame):
             bg=self.app_config.MAIN_BG_COLOR,
             fg=self.app_config.DISABLED_TEXT_COLOR,
         )
-        
-        self.playlist_checkbox.grid(row=1, column=1, columnspan=3, sticky=W, pady=5)
+        self.playlist_checkbox.select()
         
         self.file_browserLabel = Label(
             master=self.inputContainer,
@@ -161,6 +164,13 @@ class MainFrame(Frame):
         
         self.status.updateStatus('MainFrame Loaded!')
     
+    def inputUpdated(self, value=''):
+        if (self.url_input.get() != '') and ('youtube.com/playlist' in self.url_input.get().lower()):
+            self.playlist_checkbox.grid(row=1, column=1, columnspan=3, sticky=W, pady=5)
+        else:
+            self.playlist_checkbox.grid_forget()
+        return True
+    
     def setDownloadPath(self):
         path = filedialog.askdirectory(initialdir=self.path_to_save)
         if self.path_to_save is not None:
@@ -177,7 +187,7 @@ class MainFrame(Frame):
     def get_info(self):
         url = self.url_input.get()
         if not url:
-            print("URL: ",url)
+            # print("URL: ",url)
             print("Please Enter Your URL to proceed!")
             return
         self.download_btn.config(state=DISABLED)
