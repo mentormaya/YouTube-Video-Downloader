@@ -197,7 +197,7 @@ class MainFrame(Frame):
     def clear_download(self):
         if self.get:
             self.download_btn.config(state=NORMAL, text="Get Info", command=self.get_info)
-        print('Clearing downloads')
+        print('Info Cleared!')
         self.url_input.delete(0, END)
     
     def get_info(self):
