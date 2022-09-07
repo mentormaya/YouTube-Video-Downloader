@@ -24,7 +24,7 @@ class AboutFrame(Frame):
             master=mainContainer,
             bg=self.app_config.MAIN_BG_COLOR
         )
-        headerLabel.pack(padx=10, pady=5, side=TOP)
+        headerLabel.pack(padx=10, pady=2, side=TOP)
         
         contentContainer = Frame(
             master=mainContainer,
@@ -38,7 +38,7 @@ class AboutFrame(Frame):
         contentContainer.columnconfigure(index=3, weight=1)
         
         author_img = Image.open(os.path.join(self.master.master.extDataDir, self.app_config.AUTHOR_IMG))
-        author_img = author_img.resize((int(self.app_config.AUTHOR_IMG_SIZE), int(self.app_config.AUTHOR_IMG_SIZE)), Image.Resampling.LANCZOS)
+        author_img = author_img.resize((int(self.app_config.AUTHOR_IMG_SIZE) + 40, int(self.app_config.AUTHOR_IMG_SIZE)), Image.Resampling.LANCZOS)
         author_image = ImageTk.PhotoImage(author_img)
         
         imageLabel = Label(
@@ -47,7 +47,7 @@ class AboutFrame(Frame):
             bg=self.app_config.MAIN_BG_COLOR
         )
         imageLabel.image = author_image
-        imageLabel.pack(padx=10, pady=5, expand=True, fill=X)
+        imageLabel.pack(padx=10, pady=2, expand=True, fill=X)
         
         about_text = open(file=os.path.join(self.master.master.extDataDir, 'assets/contents/about.txt'))
         
