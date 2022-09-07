@@ -203,7 +203,6 @@ class MainFrame(Frame):
     def get_info(self):
         url = self.url_input.get()
         if not url:
-            # print("URL: ",url)
             print("Please Enter Your URL to proceed!")
             return
         self.download_btn.config(state=DISABLED)
