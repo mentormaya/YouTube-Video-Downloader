@@ -13,10 +13,10 @@ Double click the exe file to run
 Download the whole project in the ZIP format from the git repository link above.
 
 # Git Clone
-Clone the whole repository as a project folder in to your own local folder from the [Maya Utiliy App Git Repo](https://github.com/mentormaya/YouTube-Video-Downloader.git) using following git command
+Clone the whole repository as a project folder in to your own local folder from the [YouTube Video Downloader Git Repo](https://github.com/mentormaya/YouTube-Video-Downloader.git) using following git command
 
 ```GIT
-git clone https://github.com/mentormaya/Maya-Utility-App.git
+git clone https://github.com/mentormaya/YouTube-Video-Downloader.git
 ```
 
 # Virtual Environment
