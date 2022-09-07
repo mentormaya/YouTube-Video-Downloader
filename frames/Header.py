@@ -1,3 +1,4 @@
+import os
 from tkinter import *
 from tqdm.auto import tqdm
 from tkinter.ttk import Separator
@@ -12,7 +13,7 @@ class Header(Frame):
         self.drawUI()
     
     def drawUI(self):
-        logo = Image.open(self.image)
+        logo = Image.open(os.path.join(self.master.master.master.master.extDataDir, self.image))
         logo = logo.resize((75, 75), Image.Resampling.LANCZOS)
         
         logoImage = ImageTk.PhotoImage(logo)

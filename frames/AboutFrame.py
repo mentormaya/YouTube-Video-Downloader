@@ -1,4 +1,4 @@
-from telnetlib import AUTHENTICATION
+import os
 from tkinter import *
 from tqdm.auto import tqdm
 from PIL import Image, ImageTk
@@ -19,7 +19,7 @@ class AboutFrame(Frame):
         
         headerLabel = Header(
             text=[self.title, self.subtitle],
-            image='./assets/images/YouTube-icon.png',
+            image=os.path.join(self.master.master.extDataDir, 'assets/images/YouTube-icon.png'),
             config=self.app_config, 
             master=mainContainer,
             bg=self.app_config.MAIN_BG_COLOR
@@ -37,7 +37,7 @@ class AboutFrame(Frame):
         contentContainer.columnconfigure(index=2, weight=5)
         contentContainer.columnconfigure(index=3, weight=1)
         
-        author_img = Image.open(self.app_config.AUTHOR_IMG)
+        author_img = Image.open(os.path.join(self.master.master.extDataDir, self.app_config.AUTHOR_IMG))
         author_img = author_img.resize((int(self.app_config.AUTHOR_IMG_SIZE), int(self.app_config.AUTHOR_IMG_SIZE)), Image.Resampling.LANCZOS)
         author_image = ImageTk.PhotoImage(author_img)
         
@@ -49,7 +49,7 @@ class AboutFrame(Frame):
         imageLabel.image = author_image
         imageLabel.pack(padx=10, pady=5, expand=True, fill=X)
         
-        about_text = open(file='assets/contents/about.txt')
+        about_text = open(file=os.path.join(self.master.master.extDataDir, 'assets/contents/about.txt'))
         
         about_label = Text(
             master=contentContainer,

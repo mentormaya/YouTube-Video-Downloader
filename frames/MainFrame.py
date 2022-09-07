@@ -30,7 +30,7 @@ class MainFrame(Frame):
         
         self.header = Header(
             text=[self.title, self.subtitle],
-            image='./assets/images/YouTube-icon.png',
+            image=os.path.join(self.master.master.extDataDir, 'assets/images/YouTube-icon.png'),
             config=self.app_config, 
             master=mainContainer,
             bg=self.app_config.MAIN_BG_COLOR

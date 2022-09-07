@@ -22,6 +22,7 @@ from frames.StatusBar import StatusBar
 extDataDir = os.getcwd()
 if getattr(sys, 'frozen', False):
     extDataDir = sys._MEIPASS
+
 config = Pjson(dotenv_values(os.path.join(extDataDir, '.env')))
 class App():
     def __init__(self):
@@ -29,6 +30,7 @@ class App():
         self.config = config
         self.config.OS = platform.system()
         self.main_window.FILEBROWSER_PATH = os.path.join(os.getenv('WINDIR'), 'explorer.exe')
+        self.main_window.extDataDir = extDataDir
         self.yt = None
         self.about = False
         self.setup()
@@ -37,12 +39,12 @@ class App():
     def setup(self):
         self.content_height=self.main_window.winfo_height() - int(self.config.STATUS_BAR_HEIGHT), 
         self.content_width=self.main_window.winfo_width()
-        photoIcon = PhotoImage(file = './assets/images/YouTube-icon.png')
+        photoIcon = PhotoImage(file = os.path.join(self.main_window.extDataDir, 'assets/images/YouTube-icon.png'))
         self.main_window.iconphoto(False, photoIcon)
         if 'darwin' in self.config.OS.lower():
-            self.main_window.iconbitmap('./assets/images/YouTube.icns')
+            self.main_window.iconbitmap(os.path.join(self.main_window.extDataDir, 'assets/images/YouTube.icns'))
         else:
-            self.main_window.iconbitmap('./assets/images/YouTube.ico')
+            self.main_window.iconbitmap(os.path.join(self.main_window.extDataDir, 'assets/images/YouTube.ico'))
         self.setupUI()
         self.center()
         self.main_window.bind("<Key>", self.handle_keypress)
@@ -76,7 +78,7 @@ class App():
         self.contentFrame.columnconfigure(index=3, weight=1)
         
         
-        info_image = Image.open("./assets/images/information-icon.png")
+        info_image = Image.open(os.path.join(self.main_window.extDataDir, 'assets/images/information-icon.png'))
         info_image = info_image.resize((int(self.config.INFO_BTN_DIMENSION), int(self.config.INFO_BTN_DIMENSION)), Image.Resampling.LANCZOS)
         info_photo = ImageTk.PhotoImage(info_image)
         
