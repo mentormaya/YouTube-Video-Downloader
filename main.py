@@ -36,7 +36,9 @@ class App():
         self.main_window = Tk()
         self.config = config
         self.config.OS = platform.system()
-        self.main_window.FILEBROWSER_PATH = os.path.join(os.getenv('WINDIR'), 'explorer.exe')
+        print(self.config.OS)
+        if 'darwin' not in self.config.OS.lower():
+            self.main_window.FILEBROWSER_PATH = os.path.join(os.getenv('WINDIR'), 'explorer.exe')
         self.main_window.extDataDir = extDataDir
         self.yt = None
         self.about = False
