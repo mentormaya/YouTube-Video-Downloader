@@ -4,7 +4,6 @@ pyinstaller\
     --onefile\
     --windowed\
     --icon "assets/images/YouTube.ico"\
-    --splash "assets/images/YouTube-icon.png"\
     --name "YouTube Video Downloader"\
     --clean\
     --add-data "assets/images/*.png:assets/images/"\
