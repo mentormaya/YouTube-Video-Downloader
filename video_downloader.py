@@ -2,6 +2,7 @@
 
 import requests
 from pprint import pprint
+import m3u8_To_MP4 as mp4
 
 URL = 'https://prmovies.com/the-batman-2022-hindi-dubbed-Watch-online-on-prmovies/'
 
@@ -12,6 +13,14 @@ r = s.get(URL)
 
 m3u8_file = 'https://leave.ydc1wes.me/hls2/01/00003/c9woiuznhaa2_,l,o,.urlset/master.m3u8?t=4Hcb__PV33j1oMqazeo6WyKdJ3weVcANfOntcnXZl5c&s=1663127503&e=21600&f=16229&i=0.0&sp=0'
 
-r = s.get(m3u8_file)
+print('Get m3u8 file...')
 
-pprint(r.text)
+customized_http_header=dict()
+customized_http_header['Referer']=URL
+
+print("Downloaing...")
+
+r = s.get(m3u8_file)
+# playlist = mp4.multithread_download(m3u8_file,customized_http_header=customized_http_header)
+
+pprint(r.__dict__)
