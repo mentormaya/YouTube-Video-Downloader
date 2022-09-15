@@ -19,9 +19,7 @@ s = requests.Session()
 
 r = s.get(URL)
 
-pprint(r.text)
-
-m3u8_file = 'https://trxjhsdv.ydc1wes.me/hls2/01/00003/zvtzllxzil6u_l/master.m3u8?t=E9EA3mDipr13zZRMd16a4Smcv3JM9Injnwk4gxK34Hw&s=1663163892&e=21600&f=18545&i=0.0&sp=0'
+m3u8_file = 'https://rhyaat.ydc1wes.me/hls2/01/00003/7lcmarg8yby8_,l,h,.urlset/master.m3u8?t=Hm8QQbzl1z2xJexEHrAjXxha39Llkw8rteI4oNSPdls&s=1663213290&e=21600&f=18552&i=0.0&sp=0'
 
 
 print('Get m3u8 file...')
@@ -31,8 +29,6 @@ customized_http_header=dict()
 customized_http_header['Referer'] = 'https://speedostream.com/'
 
 print("Downloading...")
-
-r = s.get(m3u8_file)
 
 m3u8_obj = _get_m3u8_obj_by_uri(m3u8_file)
 
