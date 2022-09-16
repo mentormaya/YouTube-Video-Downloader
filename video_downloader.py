@@ -1,9 +1,8 @@
 # /usr/bin/python3
 
-from email import header
+import m3u8
 import requests
 from pprint import pprint
-import m3u8
 import m3u8_To_MP4 as mp4
 
 
