@@ -1,0 +1,80 @@
+<HTML>
+<style>
+    html,
+    body {
+        width: 100%;
+        height: 100%;
+        padding: 0;
+        margin: 0;
+    }
+
+    .overdiv {
+        position: absolute;
+        left: 50%;
+        top: 50%;
+        margin-left: -200px;
+        text-align: center;
+        vertical-align: middle;
+        color: #333;
+        font: bold 16px Arial;
+        width: 400px;
+    }
+</style>
+
+<BODY>
+    <div class="overdiv">
+        Embeds disabled2
+    </div>
+    <script>
+        (function() {
+            var js = `
+                window['__CF$cv$params'] = {
+                    r: '74b66775b8719884',
+                    m: 'vh11rWMrj.bEQy93aOFqZXwK0gCYX.sdVt01H01azTM-1663297775-0-AZlwNRHP1M95hQER0iLUvIeQH/UmCVBS/UOrOZPTssqxVhtabh3qbyMgEHyUbgQ9L69UZJtXfmPC64dsYLl7GY2X0pFoO9k2Fv+hlXRJFJb1hJ6CPhXintzRRwIW6Ng71/+9JKhkADw/P9Jt3UA1igY=',
+                    s: [0xf0856e8a72, 0x0a602828d6],
+                    u: '/cdn-cgi/challenge-platform/h/b'
+                };
+                var now = Date.now() / 1000,
+                    offset = 14400,
+                    ts = '' + (Math.floor(now) - Math.floor(now % offset)),
+                    _cpo = document.createElement('script');
+                _cpo.nonce = '', _cpo.src = '/cdn-cgi/challenge-platform/h/b/scripts/alpha/invisible.js?ts=' + ts, document.getElementsByTagName('head')[0].appendChild(_cpo);
+            `;
+            var _0xh = document.createElement('iframe');
+            _0xh.height = 1;
+            _0xh.width = 1;
+            _0xh.style.position = 'absolute';
+            _0xh.style.top = 0;
+            _0xh.style.left = 0;
+            _0xh.style.border = 'none';
+            _0xh.style.visibility = 'hidden';
+            document.body.appendChild(_0xh);
+        
+            function handler() {
+                var _0xi = _0xh.contentDocument || _0xh.contentWindow.document;
+                if (_0xi) {
+                    var _0xj = _0xi.createElement('script');
+                    _0xj.nonce = '';
+                    _0xj.innerHTML = js;
+                    _0xi.getElementsByTagName('head')[0].appendChild(_0xj);
+                }
+            }
+            if (document.readyState !== 'loading') {
+                handler();
+            } else if (window.addEventListener) {
+                document.addEventListener('DOMContentLoaded', handler);
+            } else {
+                var prev = document.onreadystatechange || function() {};
+                document.onreadystatechange = function(e) {
+                    prev(e);
+                    if (document.readyState !== 'loading') {
+                        document.onreadystatechange = prev;
+                        handler();
+                    }
+                };
+            }
+        })();
+    </script>
+</BODY>
+
+</HTML>
