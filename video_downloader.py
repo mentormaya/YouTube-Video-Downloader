@@ -20,7 +20,7 @@ def _get_m3u8_obj_by_uri(m3u8_uri):
 
         return m3u8_obj
 
-def download(m3u8_file, fname = 'Film', dir = './Downloads/'):
+def download(m3u8_file, fname = 'Film', dir = 'C:\Movies'):
     customized_http_header=dict()
 
     customized_http_header['Referer'] = 'https://speedostream.com/'
@@ -56,7 +56,7 @@ def download(m3u8_file, fname = 'Film', dir = './Downloads/'):
         mp4_file_name = f'{fname}.mp4'
     )
 
-URL = 'https://prmovies.com/deja-vu-2022-hindi-dubbed-Watch-online-on-prmovies/'
+URL = 'https://prmovies.com/episode/the-good-doctor-season-1-episode-1/'
 
 HEADERS = {
     'accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.9',
@@ -85,20 +85,24 @@ w = s.get(URL, headers=HEADERS)
 w_soup = BeautifulSoup(w.text, 'html.parser')
 
 data['fname'] = re.search(fname_pattern, w.text).groups()[0]
-
-data['iframes'] = w_soup.find_all('iframe')
-
-data['if_links'] = [iframe['src'] for iframe in data['iframes']]
-
-r = s.get(data['if_links'][0], headers=HEADERS)
-
 data['fname'] = re.sub("Full", "", data['fname'])
 data['fname'] = re.sub("Movie", "", data['fname'])
 data['fname'] = re.sub("Watch Online", "", data['fname'])
 data['fname'] = re.sub("on prmovies", "", data['fname']).strip()
 
+data['iframes'] = w_soup.find_all('iframe')
+
+data['if_links'] = [iframe['src'] for iframe in data['iframes']]
+
+for index, link in enumerate(data['if_links']):
+    if 'https:' not in link:
+        data['if_links'][index] = 'https:' + link
+
+r = s.get(data['if_links'][0], headers=HEADERS)
+
+
 data['m3u8_file'] = re.search(m3u8_pattern, r.text).groups()[0]
 
 pprint(data)
 
-download(m3u8_file=data['m3u8_file'], fname=data['fname'], dir='Downloads')
+download(m3u8_file=data['m3u8_file'], fname=data['fname'], dir='F:\Movies\The Good Doctor')
