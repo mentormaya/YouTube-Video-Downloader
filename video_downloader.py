@@ -1,19 +1,15 @@
 # /usr/bin/python3
 import re
-import time
-import math
 import m3u8
 import requests
 from pprint import pprint
 from bs4 import BeautifulSoup
-# import m3u8_To_MP4 as mp4
+import m3u8_To_MP4 as mp4
 
 
-offset_pattern = r'offset=(\d+)'
+m3u8_pattern = r'sources: \[{file:\"(.+)\"}\]'
 
-window_pattern = r'"window\[\'(.+)\']='
-
-w_params_pattern = r'{r:\'(.+)\',m:\'(.+)\',s:(\[.+\]),u:\'(.+)\'}'
+fname_pattern = r'<title>(.+)</title>'
 
 def _get_m3u8_obj_by_uri(m3u8_uri):
         try:
@@ -24,49 +20,49 @@ def _get_m3u8_obj_by_uri(m3u8_uri):
 
         return m3u8_obj
 
-# def download(m3u8_file):
-#     customized_http_header=dict()
+def download(m3u8_file, fname = 'Film', dir = './Downloads/'):
+    customized_http_header=dict()
 
-#     customized_http_header['Referer'] = 'https://speedostream.com/'
+    customized_http_header['Referer'] = 'https://speedostream.com/'
 
-#     print('Getting m3u8 file...')
+    print('Getting m3u8 file...')
 
-#     m3u8_obj = _get_m3u8_obj_by_uri(m3u8_file)
+    m3u8_obj = _get_m3u8_obj_by_uri(m3u8_file)
 
-#     playlists = m3u8_obj.data['playlists']
+    playlists = m3u8_obj.data['playlists']
 
-#     bandwidth = 0
+    bandwidth = 0
 
-#     stream = {}
+    stream = {}
 
-#     for playlist in playlists:
-#         if bandwidth < playlist['stream_info']['bandwidth']:
-#             stream = playlist['stream_info']
-#             stream['url'] = playlist['uri']
+    for playlist in playlists:
+        if bandwidth < playlist['stream_info']['bandwidth']:
+            stream = playlist['stream_info']
+            stream['url'] = playlist['uri']
 
-#     print(f'Selected Best Stream: {stream["resolution"]} ({stream["frame_rate"]} fps)')
+    print(f'Selected Best Stream: {stream["resolution"]} ({stream["frame_rate"]} fps)')
 
-#     print("Fetching Stream...")
+    print("Fetching Stream...")
 
-#     stream_data = _get_m3u8_obj_by_uri(stream['url'])
+    stream_data = _get_m3u8_obj_by_uri(stream['url'])
 
-#     files = stream_data.files
+    files = stream_data.files
 
-#     print(f'Total {len(files)} segments found!')
+    print(f'Total {len(files)} segments found!')
 
-#     mp4.multithread_download(
-#         stream['url'], customized_http_header=customized_http_header, 
-#         mp4_file_dir='./Downloads/', 
-#         mp4_file_name=f'{fname}.mp4'
-#     )
+    mp4.multithread_download(
+        stream['url'], customized_http_header=customized_http_header, 
+        mp4_file_dir = dir, 
+        mp4_file_name = f'{fname}.mp4'
+    )
 
-URL = 'https://prmovies.com/jogi-2022-punjabi-Watch-online-on-prmovies/'
+URL = 'https://prmovies.com/deja-vu-2022-hindi-dubbed-Watch-online-on-prmovies/'
 
 HEADERS = {
     'accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.9',
     'accept': '-encoding: gzip, deflate, br',
     'accept': '-language: en',
-    'cookie': ': domain-alert=1',
+    'cookie': 'domain-alert=1',
     'dnt': '1',
     'referer': 'https://prmovies.com/',
     'sec-ch-ua-mobile': '?0',
@@ -80,6 +76,7 @@ HEADERS = {
     'user-agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/105.0.0.0 Safari/537.36',
 }
 
+data = {}
 
 s = requests.Session()
 
@@ -87,37 +84,21 @@ w = s.get(URL, headers=HEADERS)
 
 w_soup = BeautifulSoup(w.text, 'html.parser')
 
-iframes = w_soup.find_all('iframe')
+data['fname'] = re.search(fname_pattern, w.text).groups()[0]
 
-if_links = [iframe['src'] for iframe in iframes]
+data['iframes'] = w_soup.find_all('iframe')
 
-r = s.get(if_links[0])
+data['if_links'] = [iframe['src'] for iframe in data['iframes']]
 
-# r_content = r.text
+r = s.get(data['if_links'][0], headers=HEADERS)
 
-offset = int(re.search(offset_pattern, r.text).groups()[0])
+data['fname'] = re.sub("Full", "", data['fname'])
+data['fname'] = re.sub("Movie", "", data['fname'])
+data['fname'] = re.sub("Watch Online", "", data['fname'])
+data['fname'] = re.sub("on prmovies", "", data['fname']).strip()
 
-w_params = re.search(w_params_pattern, r.text)
+data['m3u8_file'] = re.search(m3u8_pattern, r.text).groups()[0]
 
-now = time.time()
+pprint(data)
 
-params = dict(
-    ts = math.floor(now) - math.floor(now%offset),
-    window_key = re.search(window_pattern, r.text).groups()[0],
-    window_params = dict(
-        r = w_params.groups()[0],
-        m = w_params.groups()[1],
-        s = w_params.groups()[2],
-        u = w_params.groups()[3]
-    )
-)
-
-pprint(params)
-
-fname = 'Film'
-
-payload = {'some': 'data'}
-
-m3u8_file = 'https://rhyaat.ydc1wes.me/hls2/01/00003/7lcmarg8yby8_,l,h,.urlset/master.m3u8?t=Hm8QQbzl1z2xJexEHrAjXxha39Llkw8rteI4oNSPdls&s=1663213290&e=21600&f=18552&i=0.0&sp=0'
-
-# download(m3u8_file=m3u8_file)
+download(m3u8_file=data['m3u8_file'], fname=data['fname'], dir='Downloads')
