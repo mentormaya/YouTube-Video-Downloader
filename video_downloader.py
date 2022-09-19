@@ -11,6 +11,8 @@ m3u8_pattern = r'sources: \[{file:\"(.+)\"}\]'
 
 fname_pattern = r'<title>(.+)</title>'
 
+download_folder = 'F:\Movies'
+
 def _get_m3u8_obj_by_uri(m3u8_uri):
         try:
             m3u8_obj = m3u8.load(uri=m3u8_uri)
@@ -100,9 +102,18 @@ for index, link in enumerate(data['if_links']):
 
 r = s.get(data['if_links'][0], headers=HEADERS)
 
-
-data['m3u8_file'] = re.search(m3u8_pattern, r.text).groups()[0]
-
-pprint(data)
-
-download(m3u8_file=data['m3u8_file'], fname=data['fname'], dir='F:\Movies\The Good Doctor')
+if '.m3u8' in data['if_links'][0]:
+    data['m3u8_file'] = re.search(m3u8_pattern, r.text).groups()[0]
+    pprint(data)
+    download(m3u8_file=data['m3u8_file'], fname=data['fname'], dir=download_folder)
+else:
+    w_soup = BeautifulSoup(r.text, 'html.parser')
+    links = [li.get('data-video') for li in w_soup.find_all('li')]
+    for link in links:
+        if link != "":
+            r = s.get(link, headers=HEADERS)
+            if r.status_code == 200:
+                print(r.text)
+                print(link)
+                break
+            
