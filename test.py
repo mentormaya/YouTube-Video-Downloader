@@ -13,7 +13,7 @@ from requests import Session
 
 s = Session()
 
-url = 'https://sbplay2.xyz/e/m5cod5c7ole6?caption_1=https://msubload.com/sub/the-good-doctor-season-1-episode-3-mount-rushmore/the-good-doctor-season-1-episode-3-mount-rushmore.vtt&sub_1=English'
+streaming_url = 'https://sbplay2.xyz/e/m5cod5c7ole6?caption_1=https://msubload.com/sub/the-good-doctor-season-1-episode-2-mount-rushmore/the-good-doctor-season-1-episode-2-mount-rushmore.vtt&sub_1=English'
 
 domain_pattern = r"(https?://[A-Za-z._\-0-9]+)"
 
@@ -26,7 +26,7 @@ M3U8_LINK_HEADERS = {
     'accept-language': 'en',
     'cookie': 'lang=1',
     'dnt': '1',
-    'referer': url,
+    'referer': streaming_url,
     'sec-ch-ua-mobile': '?0',
     'sec-ch-ua-platform': "Windows",
     'sec-ch-ua': '"Google Chrome";v="105", "Not)A;Brand";v="8", "Chromium";v="105"',
@@ -51,7 +51,7 @@ def get_random_id(length):
     return id
 
 def generate_link(path):
-    return get_domain(url) + path
+    return get_domain(streaming_url) + path
 
 def generate_url():
     m5cod5c7ole6 = '6d35636f643563376f6c6536'
@@ -79,8 +79,8 @@ M3U8_FILE_HEADERS = {
     'connection': 'keep-alive',
     'dnt': '1',
     'host': get_domain(m3u8_url).split('//')[1],
-    'origin': get_domain(url),
-    'referer': get_domain(url) + "/",
+    'origin': get_domain(streaming_url),
+    'referer': get_domain(streaming_url) + "/",
     'sec-ch-ua-mobile': '?0',
     'sec-ch-ua-platform': "Windows",
     'sec-ch-ua': '"Google Chrome";v="105", "Not)A;Brand";v="8", "Chromium";v="105"',
@@ -93,4 +93,7 @@ M3U8_FILE_HEADERS = {
 print(f'getting the m3u8 file from {m3u8_url}')
 m3u8_data = s.get(m3u8_url, headers=M3U8_FILE_HEADERS)
 
-pprint(m3u8_data.text)
+with open('download.m3u8', 'w') as mf:
+    mf.write(m3u8_data.text)
+
+print(f'M3U8 file saved!')
