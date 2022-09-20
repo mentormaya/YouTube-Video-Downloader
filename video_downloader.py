@@ -58,7 +58,7 @@ def download(m3u8_file, fname = 'Film', dir = 'C:\Movies'):
         mp4_file_name = f'{fname}.mp4'
     )
 
-URL = 'https://prmovies.com/episode/the-good-doctor-season-1-episode-1/'
+URL = 'https://prmovies.com/episode/the-good-doctor-season-1-episode-2/'
 
 HEADERS = {
     'accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.9',
@@ -82,6 +82,8 @@ data = {}
 
 s = requests.Session()
 
+print('getting main page...')
+
 w = s.get(URL, headers=HEADERS)
 
 w_soup = BeautifulSoup(w.text, 'html.parser')
@@ -92,6 +94,8 @@ data['fname'] = re.sub("Movie", "", data['fname'])
 data['fname'] = re.sub("Watch Online", "", data['fname'])
 data['fname'] = re.sub("on prmovies", "", data['fname']).strip()
 
+print(f'Film Name extracted: {data["fname"]}')
+
 data['iframes'] = w_soup.find_all('iframe')
 
 data['if_links'] = [iframe['src'] for iframe in data['iframes']]
@@ -100,7 +104,11 @@ for index, link in enumerate(data['if_links']):
     if 'https:' not in link:
         data['if_links'][index] = 'https:' + link
 
+print(f'Links extracted: {data["if_links"]}')
+
 r = s.get(data['if_links'][0], headers=HEADERS)
+
+print(f'Link fetched: {data["if_links"][0]}')
 
 if '.m3u8' in data['if_links'][0]:
     data['m3u8_file'] = re.search(m3u8_pattern, r.text).groups()[0]
@@ -112,8 +120,7 @@ else:
     for link in links:
         if link != "":
             r = s.get(link, headers=HEADERS)
+            print(r.text)
             if r.status_code == 200:
-                print(r.text)
                 print(link)
                 break
-            
