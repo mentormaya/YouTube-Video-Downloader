@@ -22,7 +22,6 @@ def get_domain(url):
 
 M3U8_LINK_HEADERS = {
     'accept': 'application/json, text/plain, */*',
-    # 'accept-encoding': 'gzip, deflate, br',
     'accept-language': 'en',
     'cookie': 'lang=1',
     'dnt': '1',
@@ -74,7 +73,6 @@ m3u8_url = m3u8_link['stream_data']['file']
 
 M3U8_FILE_HEADERS = {
     'accept': '*/*',
-    'accept-encoding': 'gzip, deflate, br',
     'accept-language': 'en',
     'connection': 'keep-alive',
     'dnt': '1',

@@ -148,15 +148,15 @@ for index, link in enumerate(data['if_links']):
 
 print(f'Links extracted: {data["if_links"]}')
 
+r = s.get(data['if_links'][0], headers=HEADERS)
+
+print(f'Link fetched: [{data["if_links"][0]}]')
+
 if '.m3u8' in data['if_links'][0]:
     data['m3u8_file'] = re.search(m3u8_pattern, r.text).groups()[0]
     pprint(data)
     download(m3u8_file=data['m3u8_file'], fname=data['fname'], dir=download_folder)
 else:
-    r = s.get(data['if_links'][0], headers=HEADERS)
-    print(f'Link fetched: [{data["if_links"][0]}]')
-    with open('test.html', 'w') as html_file:
-        html_file.write(r.text)
     w_soup = BeautifulSoup(r.text, 'html.parser')
     links = [li.get('data-video') for li in w_soup.find_all('li')]
     for streaming_url in links:
