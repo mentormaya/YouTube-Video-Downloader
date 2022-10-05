@@ -17,7 +17,8 @@ domain_pattern = r"(https?://[A-Za-z._\-0-9]+)"
 
 download_folder = 'F:\Movies\THE_GOOD_DOCTOR'
 
-URL = 'https://prmovies.com/episode/the-good-doctor-season-1-episode-2/'
+URL = 'https://prmovies.com/viswasam-2019-hindi-dubbed-Watch-online-on-prmovies/'
+# URL = 'https://prmovies.com/episode/the-good-doctor-season-1-episode-2/'
 
 customized_http_header=dict()
 
