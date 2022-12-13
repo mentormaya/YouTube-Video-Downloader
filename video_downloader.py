@@ -15,13 +15,13 @@ fname_pattern = r'<title>(.+)</title>'
 
 domain_pattern = r"(https?://[A-Za-z._\-0-9]+)"
 
-download_folder = 'F:\Movies\THE_GOOD_DOCTOR'
+download_folder = 'F:\Movies\THE_LORD_OF_THE_RINGS'
 
-URL = 'https://prmovies.com/episode/the-good-doctor-season-1-episode-2/'
+URL = input('Enter the url: ')
 
 customized_http_header=dict()
 
-customized_http_header['Referer'] = 'https://speedostream.com/'
+customized_http_header['Referer'] = 'https://speedostream.nl/'
 
 def _get_m3u8_obj_by_uri(m3u8_uri, headers):
         try:
@@ -126,14 +126,14 @@ w = s.get(URL, headers=HEADERS)
 w_soup = BeautifulSoup(w.text, 'html.parser')
 
 data['fname'] = re.search(fname_pattern, w.text).groups()[0]
-data['fname'] = re.sub("Full", "", data['fname'])
-data['fname'] = re.sub("Movie", "", data['fname'])
-data['fname'] = re.sub("Watch", "", data['fname'])
-data['fname'] = re.sub("Online", "", data['fname'])
-data['fname'] = re.sub("online", "", data['fname'])
-data['fname'] = re.sub("-", "", data['fname'])
-data['fname'] = re.sub("  ", " ", data['fname'])
-data['fname'] = re.sub("prmovies", "", data['fname'])
+data['fname'] = re.sub("Full", "", data['fname']).strip()
+data['fname'] = re.sub("Movie", "", data['fname']).strip()
+data['fname'] = re.sub("Watch", "", data['fname']).strip()
+data['fname'] = re.sub("Online", "", data['fname']).strip()
+data['fname'] = re.sub("online", "", data['fname']).strip()
+data['fname'] = re.sub("-", "", data['fname']).strip()
+data['fname'] = re.sub("  ", " ", data['fname']).strip()
+data['fname'] = re.sub("prmovies", "", data['fname']).strip()
 data['fname'] = re.sub("on prmovies", "", data['fname']).strip()
 
 print(f'Film Name extracted: {data["fname"]}')
@@ -148,6 +148,8 @@ for index, link in enumerate(data['if_links']):
 
 print(f'Links extracted: {data["if_links"]}')
 
+r = s.get(data['if_links'][0], headers=HEADERS)
+
 if '.m3u8' in data['if_links'][0]:
     data['m3u8_file'] = re.search(m3u8_pattern, r.text).groups()[0]
     pprint(data)
@@ -155,63 +157,70 @@ if '.m3u8' in data['if_links'][0]:
 else:
     r = s.get(data['if_links'][0], headers=HEADERS)
     print(f'Link fetched: [{data["if_links"][0]}]')
-    with open('test.html', 'w') as html_file:
+    html_file_name = data["fname"] + '.html'
+    with open('html/' + html_file_name, 'w') as html_file:
         html_file.write(r.text)
-    w_soup = BeautifulSoup(r.text, 'html.parser')
-    links = [li.get('data-video') for li in w_soup.find_all('li')]
-    for streaming_url in links:
-        if streaming_url != "":
-            r = s.get(streaming_url, headers=HEADERS)
-            # print(r.text)
-            if r.status_code == 200:
-                M3U8_LINK_HEADERS = {
-                    'accept': 'application/json, text/plain, */*',
-                    'accept-language': 'en',
-                    'cookie': 'lang=1',
-                    'dnt': '1',
-                    'referer': streaming_url,
-                    'sec-ch-ua-mobile': '?0',
-                    'sec-ch-ua-platform': "Windows",
-                    'sec-ch-ua': '"Google Chrome";v="105", "Not)A;Brand";v="8", "Chromium";v="105"',
-                    'sec-fetch-dest': 'empty',
-                    'sec-fetch-mode': 'cors',
-                    'sec-fetch-site': 'same-origin',
-                    'watchsb': 'sbstream',
-                    'user-agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/105.0.0.0 Safari/537.36',
-                }
-                
-                link = generate_url(streaming_url)
+    print(f'Page written: {html_file_name}')
+    if '.m3u8' in r.text:
+        data['m3u8_file'] = re.search(m3u8_pattern, r.text).groups()[0]
+        pprint(data)
+        download(m3u8_file=data['m3u8_file'], fname=data['fname'], dir=download_folder)
+    else:
+        w_soup = BeautifulSoup(r.text, 'html.parser')
+        links = [li.get('data-video') for li in w_soup.find_all('li')]
+        for streaming_url in links:
+            if streaming_url != "":
+                r = s.get(streaming_url, headers=HEADERS)
+                # print(r.text)
+                if r.status_code == 200:
+                    M3U8_LINK_HEADERS = {
+                        'accept': 'application/json, text/plain, */*',
+                        'accept-language': 'en',
+                        'cookie': 'lang=1',
+                        'dnt': '1',
+                        'referer': streaming_url,
+                        'sec-ch-ua-mobile': '?0',
+                        'sec-ch-ua-platform': "Windows",
+                        'sec-ch-ua': '"Google Chrome";v="105", "Not)A;Brand";v="8", "Chromium";v="105"',
+                        'sec-fetch-dest': 'empty',
+                        'sec-fetch-mode': 'cors',
+                        'sec-fetch-site': 'same-origin',
+                        'watchsb': 'sbstream',
+                        'user-agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/105.0.0.0 Safari/537.36',
+                    }
+                    
+                    link = generate_url(streaming_url)
 
-                print(f'getting the m3u8 link {link}')
-                m3u8_link = s.get(link, headers=M3U8_LINK_HEADERS)
+                    print(f'getting the m3u8 link {link}')
+                    m3u8_link = s.get(link, headers=M3U8_LINK_HEADERS)
 
-                print(f'writing the m3u8 link to file')
-                with open('stream_data.json', 'w') as sjf:
-                    sjf.write(m3u8_link.text)
+                    print(f'writing the m3u8 link to file')
+                    with open('stream_data.json', 'w') as sjf:
+                        sjf.write(m3u8_link.text)
 
-                m3u8_link = json.loads(m3u8_link.text)
+                    m3u8_link = json.loads(m3u8_link.text)
 
-                m3u8_url = m3u8_link['stream_data']['file']
+                    m3u8_url = m3u8_link['stream_data']['file']
 
-                M3U8_FILE_HEADERS = {
-                    'accept': '*/*',
-                    'accept-language': 'en',
-                    'connection': 'keep-alive',
-                    'dnt': '1',
-                    'host': get_domain(m3u8_url).split('//')[1],
-                    'origin': get_domain(streaming_url),
-                    'referer': get_domain(streaming_url) + "/",
-                    'sec-ch-ua-mobile': '?0',
-                    'sec-ch-ua-platform': "Windows",
-                    'sec-ch-ua': '"Google Chrome";v="105", "Not)A;Brand";v="8", "Chromium";v="105"',
-                    'sec-fetch-dest': 'empty',
-                    'sec-fetch-mode': 'cors',
-                    'sec-fetch-site': 'cross-origin',
-                    'user-agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/105.0.0.0 Safari/537.36'
-                }
-                
-                download(m3u8_file=m3u8_url, fname=data['fname'], dir=download_folder, headers=M3U8_FILE_HEADERS)
-                
-                print(f'{data["fname"]} saved successfully!')
-                
-                break
+                    M3U8_FILE_HEADERS = {
+                        'accept': '*/*',
+                        'accept-language': 'en',
+                        'connection': 'keep-alive',
+                        'dnt': '1',
+                        'host': get_domain(m3u8_url).split('//')[1],
+                        'origin': get_domain(streaming_url),
+                        'referer': get_domain(streaming_url) + "/",
+                        'sec-ch-ua-mobile': '?0',
+                        'sec-ch-ua-platform': "Windows",
+                        'sec-ch-ua': '"Google Chrome";v="105", "Not)A;Brand";v="8", "Chromium";v="105"',
+                        'sec-fetch-dest': 'empty',
+                        'sec-fetch-mode': 'cors',
+                        'sec-fetch-site': 'cross-origin',
+                        'user-agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/105.0.0.0 Safari/537.36'
+                    }
+                    
+                    download(m3u8_file=m3u8_url, fname=data['fname'], dir=download_folder, headers=M3U8_FILE_HEADERS)
+                    
+                    print(f'{data["fname"]} saved successfully!')
+                    
+                    break
