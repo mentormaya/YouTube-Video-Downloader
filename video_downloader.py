@@ -15,7 +15,7 @@ fname_pattern = r'<title>(.+)</title>'
 
 domain_pattern = r"(https?://[A-Za-z._\-0-9]+)"
 
-download_folder = 'F:\Movies\THE_LORD_OF_THE_RINGS'
+download_folder = 'F:\Movies'
 
 URL = input('Enter the url: ')
 
