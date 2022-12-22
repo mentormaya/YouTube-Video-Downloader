@@ -121,7 +121,7 @@ s = requests.Session()
 
 print('getting main page...')
 
-w = s.get(URL, headers=HEADERS)
+w = s.get(URL, headers=HEADERS,  verify=False)
 
 w_soup = BeautifulSoup(w.text, 'html.parser')
 
@@ -162,15 +162,18 @@ else:
         html_file.write(r.text)
     print(f'Page written: {html_file_name}')
     if '.m3u8' in r.text:
+        pprint('M3U8 file found!')
         data['m3u8_file'] = re.search(m3u8_pattern, r.text).groups()[0]
         pprint(data)
         download(m3u8_file=data['m3u8_file'], fname=data['fname'], dir=download_folder)
     else:
+        pprint('M3U8 file not found!')
         w_soup = BeautifulSoup(r.text, 'html.parser')
         links = [li.get('data-video') for li in w_soup.find_all('li')]
+        print(links)
         for streaming_url in links:
             if streaming_url != "":
-                r = s.get(streaming_url, headers=HEADERS)
+                r = s.get(streaming_url, headers=HEADERS, verify=False)
                 # print(r.text)
                 if r.status_code == 200:
                     M3U8_LINK_HEADERS = {
