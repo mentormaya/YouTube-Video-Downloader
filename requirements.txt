@@ -3,7 +3,7 @@ beautifulsoup4==4.11.1
 bottle==0.12.23
 bottle-websocket==0.2.9
 certifi==2022.6.15.1
-cffi==1.15.1
+cffi==1.14.5
 charset-normalizer==2.1.1
 colorama==0.4.5
 colour==0.1.5
